@@ -65,6 +65,11 @@
                    placeholder="Enter your password" required>
         </div>
         <div class="form-group">
+            <label for="phone">Phone number:</label>
+            <input th:field="*{phone}" type="text" id="phone" name="phone"
+                   placeholder="Enter your password" required>
+        </div>
+        <div class="form-group">
             <label for="role">Sign up as:</label>
             <select th:field="*{role}" id="role" name="role" class="custom-select">
                 <option value="USER">USER</option>

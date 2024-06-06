@@ -11,14 +11,18 @@ public class UserDto {
 
     private String role;
 
+    private long phone;
+
+
     public UserDto() {
     }
 
-    public UserDto(String email, String fullname, String password, String role) {
+    public UserDto(String email, String fullname, String password, String role, long phone) {
         this.email = email;
         this.fullname = fullname;
         this.password = password;
         this.role = role;
+        this.phone = phone;
     }
 
     public String getEmail() {
@@ -51,5 +55,13 @@ public class UserDto {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public long getPhone() {
+        return phone;
+    }
+
+    public void setPhone(long phone) {
+        this.phone = phone;
     }
 }
