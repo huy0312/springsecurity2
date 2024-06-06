@@ -51,15 +51,12 @@ public class SecurityConfig {
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .logoutSuccessUrl("/login?logout").permitAll());
         return http.build();
-
-
     }
 
+
     @Autowired
-    public void userConfig (AuthenticationManagerBuilder auth) throws Exception{
+    public void userConfig(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
 
     }
-
-
 }

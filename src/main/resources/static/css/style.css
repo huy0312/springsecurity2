@@ -55,18 +55,27 @@ input[type="submit"]:hover {
     background-color: #e5f9ff;
     color: #0e2433;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-top: 20px;
+    text-align: center;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
 }
 
-.message.success {
+.message-success {
     background-color: #d4edda;
     color: #155724;
+    border: solid;
+    text-align: center;
 }
 
-.message.error {
-    background-color: #f8d7da;
-    color: #721c24;
+.message-error {
+    background-color: #e5f9ff;
+    color: red;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+    text-align: center;
 }
 
 body {
@@ -233,4 +242,162 @@ form .button input:hover{
 }
 form .signup-link a:hover{
     text-decoration: underline;
+}
+
+/* Thanh tìm kiếm */
+.search-bar {
+    margin-left: auto; /* Căn phải */
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input[type="text"] {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.search-bar button {
+    background-color: #45b6fe;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* Chỗ post trạng thái */
+.post-status {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.post-status textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.post-status button {
+    background-color: #45b6fe;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2; /* Màu xám trắng */
+    color: #333; /* Màu chữ tối */
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #333; /* Màu nền header */
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between; /* Canh giữa */
+    align-items: center; /* Canh giữa */
+}
+
+.header h1 {
+    margin: 0;
+    color: #f2f2f2; /* Màu chữ trắng */
+}
+
+.logout {
+    color: #fff; /* Màu chữ */
+    text-decoration: none; /* Loại bỏ gạch chân */
+    padding: 10px 20px; /* Kích thước nút */
+    border-radius: 5px; /* Bo góc */
+    background-color: #e74c3c; /* Màu nền logout */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff; /* Màu nền form */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex; /* Sử dụng flexbox để căn chỉnh */
+    flex-direction: column; /* Sắp xếp thành cột */
+    overflow-y: auto;
+}
+
+.welcome {
+    padding-right: 20px; /* Khoảng cách phải */
+    margin-bottom: 20px; /* Khoảng cách dưới */
+    flex: 1; /* Phần tử mở rộng theo chiều ngang */
+}
+
+.search {
+    margin-left: auto; /* Đẩy sang phải */
+    margin-bottom: 20px; /* Khoảng cách dưới */
+}
+
+.search input[type="text"] {
+    padding: 10px; /* Kích thước input */
+    border-radius: 5px; /* Bo góc */
+    border: 1px solid #ccc; /* Viền */
+}
+
+.edit-profile {
+    margin-left: auto; /* Đẩy sang phải */
+}
+
+.edit-profile a {
+    display: block; /* Biến nút "Edit Profile" thành block để chiếm toàn bộ chiều rộng của div */
+    background-color: #45b6fe; /* Màu nền */
+    color: #fff; /* Màu chữ */
+    text-decoration: none; /* Loại bỏ gạch chân */
+    padding: 10px 20px; /* Kích thước nút */
+    border-radius: 5px; /* Bo góc */
+    text-align: center; /* Căn giữa nội dung */
+    margin-top: 20px; /* Khoảng cách từ nút Edit Profile đến các bài viết */
+}
+
+.posts {
+    border-left: 2px solid #45b6fe; /* Viền bên trái */
+    padding-left: 20px; /* Khoảng cách với viền */
+}
+
+.post {
+    margin-bottom: 20px; /* Khoảng cách giữa các bài viết */
+}
+
+.post h3 {
+    color: #45b6fe; /* Màu tiêu đề bài viết */
+}
+
+.post p {
+    margin-top: 5px; /* Khoảng cách với tiêu đề */
+}
+
+h2 {
+    color: #333; /* Màu chữ tối */
+}
+
+footer {
+    background-color: #333; /* Màu nền footer */
+    color: #fff; /* Màu chữ footer */
+    padding: 10px 20px; /* Khoảng cách */
+    text-align: center; /* Căn phải */
+    position: fixed; /* Đặt vị trí cố định */
+    bottom: 0; /* Nằm ở dưới cùng */
+    width: 100%; /* Chiều rộng 100% */
+
+}
+.container {
+    overflow-y: auto;
 }

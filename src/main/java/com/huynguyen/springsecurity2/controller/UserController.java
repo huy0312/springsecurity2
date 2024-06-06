@@ -22,7 +22,6 @@ public class UserController {
     @Autowired
     UserDetailsService userDetailsService;
 
-
     @GetMapping("/registration")
     public String registration(@ModelAttribute("user") UserDto userDto) {
         return "register";
@@ -33,13 +32,11 @@ public class UserController {
         model.addAttribute("message", "Registered Successfully");
         userService.save(userDto);
         return "register";
-
     }
 
     @GetMapping("/login")
     public String login() {
         return "login";
-
     }
 
     @GetMapping("/user-page")
@@ -64,7 +61,7 @@ public class UserController {
     }
 
     @GetMapping("/formUpdate")
-    public String formUpdate(@RequestParam("id")long id, Model model) {
+    public String formUpdate(@RequestParam("id") long id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
         return "user-form";
@@ -78,10 +75,16 @@ public class UserController {
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id")long Id) {
+    public String delete(@RequestParam("id") long Id) {
         userService.deleteById(Id);
         return "redirect:/list";
+    }
 
+    @GetMapping("/profile")
+    public String profile(@RequestParam("id") long id, Model model) {
+        User user = userService.findById(id);
+        model.addAttribute("user", user);
+        return "user-profile";
     }
 
 

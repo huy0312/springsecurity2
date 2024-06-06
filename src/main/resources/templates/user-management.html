@@ -25,7 +25,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="tempUser:${user}">
+        <tr th:each="tempUser : ${user}" th:if="${tempUser.role == 'USER'}">
             <td th:text="${tempUser.id}">
             <td th:text="${tempUser.fullname}">
             <td th:text="${tempUser.email}">
