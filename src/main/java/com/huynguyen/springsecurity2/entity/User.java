@@ -4,34 +4,43 @@ package com.huynguyen.springsecurity2.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users",uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "fullname")
     private String fullname;
 
+    @Column(name = "role")
     private String role;
 
+    @Column(name = "phone")
     private long phone;
 
+    private short enable;
 
 
-    public User(String email, String password, String fullname, String role,long phone) {
+    public User(String email, String password, String fullname, String role, long phone,short enable) {
         this.email = email;
         this.password = password;
         this.fullname = fullname;
         this.role = role;
         this.phone = phone;
+        this.enable = enable;
     }
 
-    public User() {}
+    public User() {
+    }
 
     public Long getId() {
         return id;
@@ -79,5 +88,13 @@ public class User {
 
     public void setPhone(long phone) {
         this.phone = phone;
+    }
+
+    public short getEnable() {
+        return enable;
+    }
+
+    public void setEnable(short enable) {
+        this.enable = enable;
     }
 }

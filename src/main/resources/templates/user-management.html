@@ -22,6 +22,7 @@
             <th>Email</th>
             <th>Password</th>
             <th>Phone Number</th>
+            <th>Status</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -32,6 +33,10 @@
             <td th:text="${tempUser.email}"></td>
             <td th:text="${tempUser.password}"></td>
             <td th:text="${tempUser.phone}"></td>
+            <td>
+                <input type="radio" th:checked="${tempUser.enable == 1}" disabled> Active
+                <input type="radio" th:checked="${tempUser.enable == 0}" disabled> Inactive
+            </td>
             <td>
                 <a th:href="@{/formUpdate(id=${tempUser.id})}" class="btn btn-info btn-sm">UPDATE</a>
                 <a th:href="@{/delete(id=${tempUser.id})}" class="btn btn-danger btn-sm"

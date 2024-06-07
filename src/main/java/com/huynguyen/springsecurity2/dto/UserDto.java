@@ -13,16 +13,19 @@ public class UserDto {
 
     private long phone;
 
+    private short enable;
+
 
     public UserDto() {
     }
 
-    public UserDto(String email, String fullname, String password, String role, long phone) {
+    public UserDto(String email, String fullname, String password, String role, long phone,short enable) {
         this.email = email;
         this.fullname = fullname;
         this.password = password;
         this.role = role;
         this.phone = phone;
+        this.enable = enable;
     }
 
     public String getEmail() {
@@ -63,5 +66,13 @@ public class UserDto {
 
     public void setPhone(long phone) {
         this.phone = phone;
+    }
+
+    public short getEnable() {
+        return enable;
+    }
+
+    public void setEnable(short enable) {
+        this.enable = enable;
     }
 }
