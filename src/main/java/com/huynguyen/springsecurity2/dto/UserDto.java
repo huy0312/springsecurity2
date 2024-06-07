@@ -1,6 +1,8 @@
 package com.huynguyen.springsecurity2.dto;
 
 
+import java.beans.Transient;
+
 public class UserDto {
 
     private String email;
@@ -15,17 +17,19 @@ public class UserDto {
 
     private short enable;
 
+    private String avatar;
 
     public UserDto() {
     }
 
-    public UserDto(String email, String fullname, String password, String role, long phone,short enable) {
+    public UserDto(String email, String fullname, String password, String role, long phone,short enable,String avatar) {
         this.email = email;
         this.fullname = fullname;
         this.password = password;
         this.role = role;
         this.phone = phone;
         this.enable = enable;
+        this.avatar = avatar;
     }
 
     public String getEmail() {
@@ -75,4 +79,15 @@ public class UserDto {
     public void setEnable(short enable) {
         this.enable = enable;
     }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+
+
 }

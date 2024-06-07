@@ -18,6 +18,7 @@
         <thead class="table-dark">
         <tr>
             <th>ID</th>
+            <th>Avatar</th>
             <th>Full Name</th>
             <th>Email</th>
             <th>Password</th>
@@ -29,6 +30,7 @@
         <tbody>
         <tr th:each="tempUser : ${user}" th:if="${tempUser.role == 'USER'}">
             <td th:text="${tempUser.id}"></td>
+            <td><img th:src="@{${tempUser.avatar}}" alt="avatar" width="50" height="50"></td>
             <td th:text="${tempUser.fullname}"></td>
             <td th:text="${tempUser.email}"></td>
             <td th:text="${tempUser.password}"></td>

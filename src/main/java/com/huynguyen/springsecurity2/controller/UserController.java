@@ -10,7 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -28,10 +31,31 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public String saveUser(@ModelAttribute("user") UserDto userDto, Model model) {
+    public String saveUser(@ModelAttribute("user") UserDto userDto, Model model,@RequestParam("avatarFile") MultipartFile file) {
+        if(!file.isEmpty()) {
+            String avatarPath = saveAvatarFile(file);
+            userDto.setAvatar(avatarPath);
+        }
         model.addAttribute("message", "Registered Successfully");
         userService.save(userDto);
         return "register";
+    }
+
+    private String saveAvatarFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String directoryPath = "D:/uploads/avatars";
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        String filePath = directoryPath+ fileName;
+        File dest = new File(filePath);
+        try {
+            file.transferTo(dest);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return filePath;
     }
 
 

@@ -49,7 +49,8 @@
     <form th:action="@{/registration}" id="registrationForm"
           method="post"
           role="form"
-          th:object="${user}">
+          th:object="${user}"
+          enctype="multipart/form-data">
         <div class="form-group">
             <label for="fullname">Full Name:</label>
             <input th:field="*{fullname}" type="text" id="fullname" name="fullname" placeholder="Enter your full name"
@@ -74,6 +75,10 @@
             <select th:field="*{role}" id="role" name="role" class="custom-select">
                 <option value="USER">USER</option>
             </select>
+        </div>
+        <div>
+            <label for="avatarFile">Avatar:</label>
+            <input type="file" id="avatarFile" name="avatarFile">
         </div>
         <input type="submit" value="Register">
         <span>Already signed up?<a th:href="@{/login}">Sign in here!</a></span>

@@ -41,6 +41,9 @@ public class SecurityConfig {
                                 .requestMatchers("/user-page").hasAuthority("USER")
                                 .requestMatchers("/registration", "/css/**").permitAll()
                                 .anyRequest().authenticated())
+//                .oauth2Login(form -> form.loginPage("/login")
+//                        .loginProcessingUrl("/login")
+//                        .permitAll())
                 .formLogin(form ->
                         form
                                 .loginPage("/login")
