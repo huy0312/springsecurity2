@@ -34,6 +34,7 @@ public class UserController {
         return "register";
     }
 
+
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -44,6 +45,13 @@ public class UserController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
         model.addAttribute("user", userDetails);
         return "user";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, Principal principal) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+        model.addAttribute("user", userDetails);
+        return "user-profile";
     }
 
     @GetMapping("/admin-page")
@@ -79,14 +87,4 @@ public class UserController {
         userService.deleteById(Id);
         return "redirect:/list";
     }
-
-    @GetMapping("/profile")
-    public String profile(@RequestParam("id") long id, Model model) {
-        User user = userService.findById(id);
-        model.addAttribute("user", user);
-        return "user-profile";
-    }
-
-
-
 }
