@@ -2,11 +2,9 @@ package com.huynguyen.springsecurity2.security;
 
 import com.huynguyen.springsecurity2.service.CustomSuccessHandler;
 import com.huynguyen.springsecurity2.service.CustomUserDetailService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,7 +20,6 @@ public class SecurityConfig {
 
     @Autowired
     CustomSuccessHandler customSuccessHandler;
-
 
     @Autowired
     CustomUserDetailService customUserDetailService;

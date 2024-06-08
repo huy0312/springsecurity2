@@ -1,7 +1,6 @@
 package com.huynguyen.springsecurity2.dto;
 
 
-import java.beans.Transient;
 
 public class UserDto {
 

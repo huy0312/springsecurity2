@@ -3,8 +3,10 @@ package com.huynguyen.springsecurity2.controller;
 
 import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
+import com.huynguyen.springsecurity2.service.CustomUserDetails;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -43,7 +45,7 @@ public class UserController {
 
     private String saveAvatarFile(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        String directoryPath = "D:/uploads/avatars";
+        String directoryPath = "C:/Users/amshu/Desktop/1111/springsecurity2/src/main/resources/static/avatar";
         File directory = new File(directoryPath);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -58,7 +60,6 @@ public class UserController {
         return filePath;
     }
 
-
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -72,9 +73,11 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public String profile(Model model, Principal principal) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("user", userDetails);
+    public String profile(Model model, Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+        User user = userService.findById(userId);
+        model.addAttribute("user", user);
         return "user-profile";
     }
 
