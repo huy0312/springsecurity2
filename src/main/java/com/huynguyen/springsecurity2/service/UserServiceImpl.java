@@ -26,7 +26,9 @@ public class UserServiceImpl implements UserService {
         if (userDto.getId() != null && userRepository.existsById(userDto.getId())) {
             user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             user.setEmail(userDto.getEmail());
-            user.setPassword(passwordEncoder.encode(userDto.getPassword())); // Lưu ý: Bạn có thể muốn giữ nguyên mật khẩu nếu không có thay đổi
+            if (!user.getPassword().equals(userDto.getPassword())) {
+                user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            }
             user.setFullname(userDto.getFullname());
             user.setRole(userDto.getRole());
             user.setPhone(userDto.getPhone());

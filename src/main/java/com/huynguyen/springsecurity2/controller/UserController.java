@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,10 @@ public class UserController {
 
     @Autowired
     UserDetailsService userDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @GetMapping("/registration")
     public String registration(@ModelAttribute("user") UserDto userDto) {
@@ -121,8 +126,16 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String saveEmployee(@ModelAttribute("user") UserDto userDto) {
-        //save the employee
+    public String saveUser(@ModelAttribute("user") UserDto userDto) {
+        User existingUser = userService.findById(userDto.getId());
+
+        if (existingUser != null) {
+            if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+                userDto.setPassword(existingUser.getPassword());
+            } else {
+                userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            }
+        }
         userService.save(userDto);
         return "redirect:/user-page";
     }
