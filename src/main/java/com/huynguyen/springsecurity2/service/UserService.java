@@ -21,6 +21,10 @@ public interface UserService {
 
     Page<User> findAll(int page, int size );
 
+    List<User> search(String keyword);
+
+    public long countRecords();
+
 
 
 

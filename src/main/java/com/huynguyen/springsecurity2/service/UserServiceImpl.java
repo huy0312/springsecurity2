@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,5 +81,19 @@ public class UserServiceImpl implements UserService {
     public Page<User> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<User> search(String keyword) {
+        List<User> userList = userRepository.search(keyword);
+        if (userList == null) {
+            return Collections.emptyList(); // Hoặc bất kỳ danh sách trống nào khác
+        }
+        return userList;
+    }
+
+    @Override
+    public long countRecords() {
+        return userRepository.count();
     }
 }

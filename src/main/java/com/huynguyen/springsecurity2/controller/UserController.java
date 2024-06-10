@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -71,6 +72,9 @@ public class UserController {
         return "/uploads/avatar/" + fileName; // Trả về đường dẫn để sử dụng trong HTML
     }
 
+
+
+
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -93,6 +97,18 @@ public class UserController {
         return "user-profile";
     }
 
+    @GetMapping("/search")
+    public String search(Model model, @RequestParam(defaultValue = "") String keyword) {
+        List<User> userList;
+        if (!keyword.isEmpty()) {
+            userList = userService.search(keyword);
+        } else {
+            userList = userService.findAll();
+        }
+        model.addAttribute("user", userList);
+        return "user-management";
+    }
+
     @GetMapping("/admin-page")
     public String adminPage(Model model, Principal principal) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
@@ -102,9 +118,13 @@ public class UserController {
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<User> userPage = userService.findAll(page,size);
+                       @RequestParam(defaultValue = "10") int size,
+                       @RequestParam(defaultValue = "id") String sortField) {
+        Sort sort = Sort.by(sortField).ascending(); // Mặc định sắp xếp theo trường "id"
+        Pageable pageable = PageRequest.of(page, size, sort);
+        long totalRecords = userService.countRecords();
+        Page<User> userPage = userService.findAll( page,size);
+        model.addAttribute("totalRecords", totalRecords);
         model.addAttribute("userPage", userPage);
         return "user-management";
     }
