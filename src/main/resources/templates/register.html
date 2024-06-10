@@ -71,6 +71,16 @@
                    placeholder="Enter your password" required>
         </div>
         <div class="form-group">
+            <label for="country">Country:</label>
+            <input th:field="*{country}" type="text" id="country" name="country"
+                   placeholder="Enter your country" required>
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input th:field="*{city}" type="text" id="city" name="city"
+                   placeholder="Enter your city" required>
+        </div>
+        <div class="form-group">
             <label for="role">Sign up as:</label>
             <select th:field="*{role}" id="role" name="role" class="custom-select">
                 <option value="USER">USER</option>

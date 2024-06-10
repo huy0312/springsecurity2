@@ -31,15 +31,17 @@ public class User {
     @Column(name = "enable")
     private short enable;
 
-    @Column(name="avatar")
+    @Column(name = "avatar")
     private String avatar;
 
+    @Column(name = "country")
     private String country;
 
+    @Column(name = "city")
     private String city;
 
 
-    public User(String email, String password, String fullname, String role, long phone,short enable,String avatar,String country,String city) {
+    public User(String email, String password, String fullname, String role, long phone, short enable, String avatar, String country, String city) {
         this.email = email;
         this.password = password;
         this.fullname = fullname;

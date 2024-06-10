@@ -44,13 +44,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAll() {
-        return (List<User>) userRepository.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public User findById(Long id) {
         Optional<User> result = userRepository.findById(id);
-        User user = null;
+        User user;
         if (result.isPresent()) {
             user = result.get();
         } else {

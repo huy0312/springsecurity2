@@ -6,6 +6,7 @@ import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.service.CustomUserDetails;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -49,22 +50,21 @@ public class UserController {
         userService.save(userDto);
         return "register";
     }
-
     private String saveAvatarFile(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        String directoryPath = "C:/Users/amshu/Desktop/1111/springsecurity2/src/main/resources/static/avatar";
+        String directoryPath = new File("D:/uploads/avatar").getAbsolutePath();
         File directory = new File(directoryPath);
         if (!directory.exists()) {
-            directory.mkdirs();
+            directory.mkdirs(); // Tạo thư mục nếu chưa tồn tại
         }
-        String filePath = directoryPath+ fileName;
+        String filePath = directoryPath + File.separator + fileName;
         File dest = new File(filePath);
         try {
-            file.transferTo(dest);
-        }catch (IOException e) {
+            file.transferTo(dest); // Lưu tệp
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return filePath;
+        return "/uploads/avatar/" + fileName; // Trả về đường dẫn để sử dụng trong HTML
     }
 
     @GetMapping("/login")
@@ -85,6 +85,7 @@ public class UserController {
         Long userId = userDetails.getId();
         User user = userService.findById(userId);
         model.addAttribute("user", user);
+        model.addAttribute("avatarUrl", user.getAvatar());
         return "user-profile";
     }
 

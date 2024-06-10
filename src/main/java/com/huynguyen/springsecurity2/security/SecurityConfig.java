@@ -11,7 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -36,11 +39,19 @@ public class SecurityConfig {
                         request
                                 .requestMatchers("/admin-page").hasAuthority("ADMIN")
                                 .requestMatchers("/user-page").hasAuthority("USER")
-                                .requestMatchers("/registration", "/css/**").permitAll()
+                                .requestMatchers("/login").hasAuthority("LOGIN")
+                                .requestMatchers("/registration", "/css/**","/avatar/**").permitAll()
                                 .anyRequest().authenticated())
-//                .oauth2Login(form -> form.loginPage("/login")
-//                        .loginProcessingUrl("/login")
-//                        .permitAll())
+//                .oauth2Login(oauth2 ->
+//                        oauth2
+//                                .loginPage("/login")
+//                                .userInfoEndpoint(userInfo ->
+//                                        userInfo
+//                                                .userService(oauth2UserService())
+//                                )
+//                                .successHandler(oauth2LoginSuccessHandler())
+//                                .loginProcessingUrl("/login").permitAll())
+
                 .formLogin(form ->
                         form
                                 .loginPage("/login")
@@ -53,6 +64,24 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public OidcUserService oidcUserService() {
+        return new OidcUserService();
+    }
+
+    @Bean
+    public OidcUserService oauth2UserService() {
+        return new OidcUserService();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler oauth2LoginSuccessHandler() {
+        return (request, response, authentication) -> {
+            OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
+            // Your custom logic after successful OAuth2 login
+            response.sendRedirect("/user-page");
+        };
+    }
 
     @Autowired
     public void userConfig(AuthenticationManagerBuilder auth) throws Exception {
