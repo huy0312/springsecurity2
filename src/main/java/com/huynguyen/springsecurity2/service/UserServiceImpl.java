@@ -34,8 +34,10 @@ public class UserServiceImpl implements UserService {
             user.setPhone(userDto.getPhone());
             user.setEnable(userDto.getEnable());
             user.setAvatar(userDto.getAvatar());
+            user.setCity(userDto.getCity());
+            user.setCountry(userDto.getCountry());
         } else {
-            user = new User(userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), userDto.getFullname(), userDto.getRole(), userDto.getPhone(), userDto.getEnable(), userDto.getAvatar());
+            user = new User(userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), userDto.getFullname(), userDto.getRole(), userDto.getPhone(), userDto.getEnable(), userDto.getAvatar(), userDto.getCountry(), userDto.getCity());
         }
         return userRepository.save(user);
     }

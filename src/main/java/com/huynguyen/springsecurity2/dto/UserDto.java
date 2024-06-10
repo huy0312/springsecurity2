@@ -1,7 +1,6 @@
 package com.huynguyen.springsecurity2.dto;
 
 
-
 public class UserDto {
 
     private Long id;
@@ -20,10 +19,14 @@ public class UserDto {
 
     private String avatar;
 
+    private String country;
+
+    private String city;
+
     public UserDto() {
     }
 
-    public UserDto(String email, String fullname, String password, String role, long phone,short enable,String avatar) {
+    public UserDto(String email, String fullname, String password, String role, long phone, short enable, String avatar, String country, String city) {
         this.email = email;
         this.fullname = fullname;
         this.password = password;
@@ -31,6 +34,8 @@ public class UserDto {
         this.phone = phone;
         this.enable = enable;
         this.avatar = avatar;
+        this.country = country;
+        this.city = city;
     }
 
     public String getEmail() {
@@ -95,5 +100,21 @@ public class UserDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

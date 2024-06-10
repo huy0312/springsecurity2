@@ -34,8 +34,12 @@ public class User {
     @Column(name="avatar")
     private String avatar;
 
+    private String country;
 
-    public User(String email, String password, String fullname, String role, long phone,short enable,String avatar) {
+    private String city;
+
+
+    public User(String email, String password, String fullname, String role, long phone,short enable,String avatar,String country,String city) {
         this.email = email;
         this.password = password;
         this.fullname = fullname;
@@ -43,6 +47,8 @@ public class User {
         this.phone = phone;
         this.enable = enable;
         this.avatar = avatar;
+        this.country = country;
+        this.city = city;
 
     }
 
@@ -119,5 +125,21 @@ public class User {
             return null;
         }
         return "/avatar/" + avatar;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

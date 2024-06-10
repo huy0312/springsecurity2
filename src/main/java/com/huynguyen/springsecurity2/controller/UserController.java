@@ -115,6 +115,8 @@ public class UserController {
             userDto.setPhone(user.getPhone());
             userDto.setEnable(user.getEnable());
             userDto.setAvatar(user.getAvatar());
+            userDto.setCity(user.getCity());
+            userDto.setCountry(user.getCountry());
             model.addAttribute("user", userDto);
             model.addAttribute("pageTitle", "Update Successfully");
             return "user-form";
