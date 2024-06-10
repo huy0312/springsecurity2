@@ -25,7 +25,7 @@ public class User {
     private String role;
 
     @Column(name = "phone")
-    private long phone;
+    private String phone;
 
     @Column(name = "enable")
     private short enable;
@@ -40,7 +40,7 @@ public class User {
     private String city;
 
 
-    public User(String email, String password, String fullname, String role, long phone, short enable, String avatar, String country, String city) {
+    public User(String email, String password, String fullname, String role, String phone, short enable, String avatar, String country, String city) {
         this.email = email;
         this.password = password;
         this.fullname = fullname;
@@ -96,11 +96,11 @@ public class User {
         this.role = role;
     }
 
-    public long getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

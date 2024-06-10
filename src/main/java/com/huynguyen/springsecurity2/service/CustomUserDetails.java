@@ -39,7 +39,7 @@ public class CustomUserDetails implements UserDetails {
         return user.getEmail();
     }
 
-    public long getPhoneNumber() {
+    public String getPhoneNumber() {
         return user.getPhone();
     }
 

@@ -13,7 +13,7 @@ public class UserDto {
 
     private String role;
 
-    private long phone;
+    private String phone;
 
     private short enable;
 
@@ -26,7 +26,7 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(String email, String fullname, String password, String role, long phone, short enable, String avatar, String country, String city) {
+    public UserDto(String email, String fullname, String password, String role, String phone, short enable, String avatar, String country, String city) {
         this.email = email;
         this.fullname = fullname;
         this.password = password;
@@ -70,11 +70,11 @@ public class UserDto {
         this.role = role;
     }
 
-    public long getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
