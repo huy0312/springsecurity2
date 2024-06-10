@@ -25,9 +25,10 @@ public class CustomUserDetails implements UserDetails {
         return List.of(new SimpleGrantedAuthority(user.getRole()));
     }
 
-    public String getFullname(){
+    public String getFullname() {
         return user.getFullname();
     }
+
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -41,8 +42,6 @@ public class CustomUserDetails implements UserDetails {
     public long getPhoneNumber() {
         return user.getPhone();
     }
-
-
 
     @Override
     public boolean isAccountNonExpired() {
