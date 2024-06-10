@@ -7,6 +7,9 @@ import com.huynguyen.springsecurity2.service.CustomUserDetails;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -61,6 +64,7 @@ public class UserController {
         File dest = new File(filePath);
         try {
             file.transferTo(dest); // Lưu tệp
+            System.out.println("Saved avatar file to: " + filePath); // Thêm lệnh log
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,9 +101,11 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public String list(Model model) {
-        List<User> user = userService.findAll();
-        model.addAttribute("user", user);
+    public String list(Model model, @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userService.findAll(page,size);
+        model.addAttribute("userPage", userPage);
         return "user-management";
     }
 
@@ -129,9 +135,8 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String saveUser(@ModelAttribute("user") UserDto userDto) {
+    public String saveUser(@ModelAttribute("user") UserDto userDto, @RequestParam("avatarFile") MultipartFile file) {
         User existingUser = userService.findById(userDto.getId());
-
         if (existingUser != null) {
             if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
                 userDto.setPassword(existingUser.getPassword());
@@ -139,7 +144,7 @@ public class UserController {
                 userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
             }
         }
-        userService.save(userDto);
+        userService.save(userDto); // Lưu user với avatar mới
         return "redirect:/user-page";
     }
 

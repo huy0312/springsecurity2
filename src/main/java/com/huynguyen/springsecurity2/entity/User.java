@@ -10,7 +10,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    @SequenceGenerator(name = "users_seq", sequenceName = "users_sequence", allocationSize = 1)
     private Long id;
 
     @Column(name = "email")
