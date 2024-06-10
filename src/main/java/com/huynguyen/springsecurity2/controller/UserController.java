@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,18 +97,34 @@ public class UserController {
         return "user-management";
     }
 
-    @GetMapping("/formUpdate")
-    public String formUpdate(@RequestParam("id") long id, Model model) {
-        User user = userService.findById(id);
-        model.addAttribute("user", user);
-        return "user-form";
+    @GetMapping("/formUpdate/{id}")
+    public String formUpdate(@PathVariable("id")long id, Model model, RedirectAttributes ra) {
+        try {
+            User user = userService.get(id);
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setEmail(user.getEmail());
+            userDto.setPassword(user.getPassword());
+            userDto.setFullname(user.getFullname());
+            userDto.setRole(user.getRole());
+            userDto.setPhone(user.getPhone());
+            userDto.setEnable(user.getEnable());
+            userDto.setAvatar(user.getAvatar());
+            model.addAttribute("user", userDto);
+            model.addAttribute("pageTitle", "Update Successfully");
+            return "user-form";
+        }catch (UsernameNotFoundException e) {
+            ra.addFlashAttribute("message", "User not found");
+            return "redirect:/user-page";
+        }
+
     }
 
     @PostMapping("/save")
     public String saveEmployee(@ModelAttribute("user") UserDto userDto) {
         //save the employee
         userService.save(userDto);
-        return "redirect:/list";
+        return "redirect:/user-page";
     }
 
     @GetMapping("/delete")

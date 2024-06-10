@@ -4,6 +4,7 @@ import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(UserDto userDto) {
-        User user = new User(userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), userDto.getFullname(), userDto.getRole(),userDto.getPhone(),userDto.getEnable(), userDto.getAvatar());
+        User user;
+        if (userDto.getId() != null && userRepository.existsById(userDto.getId())) {
+            user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            user.setEmail(userDto.getEmail());
+            user.setPassword(passwordEncoder.encode(userDto.getPassword())); // Lưu ý: Bạn có thể muốn giữ nguyên mật khẩu nếu không có thay đổi
+            user.setFullname(userDto.getFullname());
+            user.setRole(userDto.getRole());
+            user.setPhone(userDto.getPhone());
+            user.setEnable(userDto.getEnable());
+            user.setAvatar(userDto.getAvatar());
+        } else {
+            user = new User(userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), userDto.getFullname(), userDto.getRole(), userDto.getPhone(), userDto.getEnable(), userDto.getAvatar());
+        }
         return userRepository.save(user);
     }
 
@@ -40,6 +53,15 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Did not find any user");
         }
         return user;
+    }
+
+    @Override
+    public User get(Long id) throws UsernameNotFoundException {
+        Optional<User> result = userRepository.findById(id);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        throw new RuntimeException("Did not find any user");
     }
 
     @Override
