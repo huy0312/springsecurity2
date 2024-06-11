@@ -3,14 +3,16 @@ package com.huynguyen.springsecurity2.controller;
 
 import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
+import com.huynguyen.springsecurity2.repository.UserRepository;
 import com.huynguyen.springsecurity2.service.CustomUserDetails;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +41,8 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping("/registration")
@@ -46,8 +51,8 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public String saveUser(@ModelAttribute("user") UserDto userDto, Model model,@RequestParam("avatarFile") MultipartFile file) {
-        if(!file.isEmpty()) {
+    public String saveUser(@ModelAttribute("user") UserDto userDto, Model model, @RequestParam("avatarFile") MultipartFile file) {
+        if (!file.isEmpty()) {
             String avatarPath = saveAvatarFile(file);
             userDto.setAvatar(avatarPath);
         }
@@ -64,9 +69,7 @@ public class UserController {
         if (originalFileName != null && originalFileName.contains(".")) {
             fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         }
-
-
-        String newFileName = UUID.randomUUID().toString() + fileExtension;
+        String newFileName = UUID.randomUUID() + fileExtension;
         String directoryPath = new File("D:/uploads/avatar").getAbsolutePath();
         File directory = new File(directoryPath);
         if (!directory.exists()) {
@@ -74,27 +77,20 @@ public class UserController {
         }
         String filePath = directoryPath + File.separator + newFileName;
         File dest = new File(filePath);
-
         try {
-
             String contentType = file.getContentType();
+            assert contentType != null;
             if (!contentType.startsWith("image/")) {
-                throw new IllegalArgumentException("Chỉ cho phép tải lên các tệp ảnh");
+                throw new IllegalArgumentException("Only image file are accepted");
             }
-
             file.transferTo(dest);
             System.out.println("Saved avatar file to: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
-            // Có thể ném ra ngoại lệ tùy chỉnh hoặc trả về giá trị lỗi
             throw new RuntimeException("Failed to save avatar file", e);
         }
-
-        // Trả về đường dẫn để sử dụng trong HTML
         return "/uploads/avatar/" + newFileName;
     }
-
-
 
     @GetMapping("/login")
     public String login() {
@@ -138,42 +134,61 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "10") int size,
-                       @RequestParam(defaultValue = "id") String sortField) {
-        Sort sort = Sort.by(sortField).ascending(); // Mặc định sắp xếp theo trường "id"
+    public String list(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortField) {
+        Sort sort = Sort.by(sortField).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
         long totalRecords = userService.countRecords();
-        Page<User> userPage = userService.findAll( page,size);
+        Page<User> userPage = userService.findAll(page, size);
         model.addAttribute("totalRecords", totalRecords);
         model.addAttribute("userPage", userPage);
         return "user-management";
     }
 
     @GetMapping("/formUpdate/{id}")
-    public String formUpdate(@PathVariable("id")long id, Model model, RedirectAttributes ra) {
+    public String formUpdate(@PathVariable("id") long id, Model model, RedirectAttributes ra) {
         try {
             User user = userService.get(id);
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setEmail(user.getEmail());
-            userDto.setPassword(user.getPassword());
-            userDto.setFullname(user.getFullname());
-            userDto.setRole(user.getRole());
-            userDto.setPhone(user.getPhone());
-            userDto.setEnable(user.getEnable());
-            userDto.setAvatar(user.getAvatar());
-            userDto.setCity(user.getCity());
-            userDto.setCountry(user.getCountry());
+            UserDto userDto = getUserDto(user);
             model.addAttribute("user", userDto);
             model.addAttribute("pageTitle", "Update Successfully");
             return "user-form";
-        }catch (UsernameNotFoundException e) {
+        } catch (UsernameNotFoundException e) {
             ra.addFlashAttribute("message", "User not found");
             return "redirect:/user-page";
         }
-
     }
+
+    private static UserDto getUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        userDto.setFullname(user.getFullname());
+        userDto.setRole(user.getRole());
+        userDto.setPhone(user.getPhone());
+        userDto.setEnable(user.getEnable());
+        userDto.setAvatar(user.getAvatar());
+        userDto.setCity(user.getCity());
+        userDto.setCountry(user.getCountry());
+        return userDto;
+    }
+
+    @PostMapping("/update-user-status")
+    public ResponseEntity<?> updateUserStatus(@RequestParam Long id, @RequestParam boolean status) {
+        try {
+            User user = userRepository.findById(id).orElse(null);
+            if (user != null) {
+                user.setEnable(status);
+                userRepository.save(user);
+                return ResponseEntity.ok().body(Collections.singletonMap("success", true));
+            } else {
+                return ResponseEntity.badRequest().body(Collections.singletonMap("success", false));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("success", false));
+        }
+    }
+
 
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") UserDto userDto, @RequestParam("avatarFile") MultipartFile file) {
@@ -192,7 +207,7 @@ public class UserController {
                 String avatarPath = saveAvatarFile(file);
                 userDto.setAvatar(avatarPath);
             } else {
-                userDto.setAvatar(existingUser.getAvatar()); // Giữ nguyên avatar hiện tại nếu không có file mới
+                userDto.setAvatar(existingUser.getAvatar());
             }
         }
 

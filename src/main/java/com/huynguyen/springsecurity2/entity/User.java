@@ -28,7 +28,7 @@ public class User {
     private String phone;
 
     @Column(name = "enable")
-    private short enable;
+    private boolean enable;
 
     @Column(name = "avatar")
     private String avatar;
@@ -39,8 +39,10 @@ public class User {
     @Column(name = "city")
     private String city;
 
+    private String verificationCode;
 
-    public User(String email, String password, String fullname, String role, String phone, short enable, String avatar, String country, String city) {
+
+    public User(String email, String password, String fullname, String role, String phone, boolean enable, String avatar, String country, String city, String verificationCode) {
         this.email = email;
         this.password = password;
         this.fullname = fullname;
@@ -50,6 +52,7 @@ public class User {
         this.avatar = avatar;
         this.country = country;
         this.city = city;
+        this.verificationCode = verificationCode;
 
     }
 
@@ -104,11 +107,11 @@ public class User {
         this.phone = phone;
     }
 
-    public short getEnable() {
+    public boolean getEnable() {
         return enable;
     }
 
-    public void setEnable(short enable) {
+    public void setEnable(boolean enable) {
         this.enable = enable;
     }
 
@@ -142,5 +145,13 @@ public class User {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 }

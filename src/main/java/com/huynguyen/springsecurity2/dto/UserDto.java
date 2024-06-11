@@ -15,7 +15,7 @@ public class UserDto {
 
     private String phone;
 
-    private short enable;
+    private boolean enable;
 
     private String avatar;
 
@@ -23,10 +23,12 @@ public class UserDto {
 
     private String city;
 
+    private String verificationCode;
+
     public UserDto() {
     }
 
-    public UserDto(String email, String fullname, String password, String role, String phone, short enable, String avatar, String country, String city) {
+    public UserDto(String email, String fullname, String password, String role, String phone, boolean enable, String avatar, String country, String city,String verificationCode) {
         this.email = email;
         this.fullname = fullname;
         this.password = password;
@@ -36,6 +38,7 @@ public class UserDto {
         this.avatar = avatar;
         this.country = country;
         this.city = city;
+        this.verificationCode = verificationCode;
     }
 
     public String getEmail() {
@@ -78,11 +81,11 @@ public class UserDto {
         this.phone = phone;
     }
 
-    public short getEnable() {
+    public boolean getEnable() {
         return enable;
     }
 
-    public void setEnable(short enable) {
+    public void setEnable(boolean enable) {
         this.enable = enable;
     }
 
@@ -116,5 +119,13 @@ public class UserDto {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 }

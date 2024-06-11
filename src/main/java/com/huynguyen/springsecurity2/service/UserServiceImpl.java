@@ -3,6 +3,7 @@ package com.huynguyen.springsecurity2.service;
 import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
+import com.huynguyen.springsecurity2.verification.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RegistrationService registrationService;
+
     @Override
     public User save(UserDto userDto) {
         User user;
@@ -39,18 +43,17 @@ public class UserServiceImpl implements UserService {
             user.setCity(userDto.getCity());
             user.setCountry(userDto.getCountry());
 
-            // Chỉ mã hóa mật khẩu nếu nó đã được thay đổi
+
             if (userDto.getPassword() != null && !userDto.getPassword().isEmpty() &&
                     !passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             }
 
-            // Cập nhật avatar nếu có
+
             if (userDto.getAvatar() != null && !userDto.getAvatar().isEmpty()) {
                 user.setAvatar(userDto.getAvatar());
             }
         } else {
-            // Tạo mới user với tất cả các thuộc tính từ userDto
             user = new User(userDto.getEmail(),
                     passwordEncoder.encode(userDto.getPassword()),
                     userDto.getFullname(),
@@ -59,7 +62,7 @@ public class UserServiceImpl implements UserService {
                     userDto.getEnable(),
                     userDto.getAvatar(),
                     userDto.getCountry(),
-                    userDto.getCity());
+                    userDto.getCity(), userDto.getVerificationCode());
         }
         return userRepository.save(user);
     }
@@ -105,7 +108,7 @@ public class UserServiceImpl implements UserService {
     public List<User> search(String keyword) {
         List<User> userList = userRepository.search(keyword);
         if (userList == null) {
-            return Collections.emptyList(); // Hoặc bất kỳ danh sách trống nào khác
+            return Collections.emptyList();
         }
         return userList;
     }
@@ -113,5 +116,37 @@ public class UserServiceImpl implements UserService {
     @Override
     public long countRecords() {
         return userRepository.count();
+    }
+
+    @Override
+    public void sendVerificationCode(String email, String verificationCode) {
+
+        String subject = "Verification Code";
+        String text = "Your verification code is: " + verificationCode;
+        registrationService.sendEmail(email, subject, text);
+
+        User user = userRepository.findByEmail(email);
+        user.setVerificationCode(verificationCode);
+        userRepository.save(user);
+    }
+
+    @Override
+    public boolean confirmVerificationCode(String email, String verificationCode) {
+        User user = userRepository.findByEmail(email);
+        if(verificationCode.equals(user.getVerificationCode())) {
+            user.setEnable(true);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void updateUserStatus(Long id, String status) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setEnable(status.equals("active"));
+            userRepository.save(user);
+        }
     }
 }
