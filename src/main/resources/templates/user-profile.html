@@ -27,13 +27,8 @@
             background: #495057; /* Thay đổi màu nền nút khi di chuột */
         }
 
-        .profile-button:focus {
+        .profile-button:focus, .profile-button:active {
             background: #495057; /* Thay đổi màu nền nút khi focus */
-            box-shadow: none;
-        }
-
-        .profile-button:active {
-            background: #495057; /* Thay đổi màu nền nút khi nhấn */
             box-shadow: none;
         }
 
@@ -53,23 +48,37 @@
             cursor: pointer;
             border: solid 1px #6c757d; /* Thay đổi màu viền khi di chuột */
         }
+
+        .hidden-input {
+            display: none;
+        }
+
+        .avatar-button {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .avatar-button:hover {
+            background: #495057;
+        }
     </style>
 </head>
 <body>
 <div class="container rounded bg-white mt-5 mb-5">
-    <form action="#" th:action="@{save}" th:object="${user}" method="post" enctype="multipart/form-data"> <!-- Đây là form -->
+    <form action="#" th:action="@{/save}" th:object="${user}" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" width="150px"
-                             th:src="@{${user.avatar}}"
-                             alt="avatar">
-                        <span class="font-weight-bold" th:text="${user.fullname}"></span>
-                        <span class="text-black-50" th:text="${user.email}"></span>
-                        <span> </span>
-                        <input type="file" id="avatarFile" name="avatarFile" onchange="previewAvatar(this)">
-                    </div>
+                    <img class="rounded-circle mt-5" width="150px" th:src="@{${user.avatar}}" alt="avatar">
+                    <span class="font-weight-bold" th:text="${user.fullname}"></span>
+                    <span class="text-black-50" th:text="${user.email}"></span>
+                    <span> </span>
+                    <input type="file" id="avatarFile" name="avatarFile" class="hidden-input" onchange="previewAvatar(this)">
+                    <button type="button" class="avatar-button" onclick="document.getElementById('avatarFile').click()">Change Avatar</button>
                 </div>
             </div>
             <div class="col-md-5 border-right">
@@ -79,28 +88,17 @@
                         <h4 class="text-right">Profile Information</h4>
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-12"><label class="labels">Name</label><input th:field="*{fullname}"
-                                                                                        type="text" class="form-control"
-                                                                                        placeholder="Name" value="">
-                        </div>
+                        <div class="col-md-12"><label class="labels">Name</label><input th:field="*{fullname}" type="text" class="form-control" placeholder="Name"></div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Email</label><input th:field="*{email}" type="text"
-                                                                                         class="form-control"
-                                                                                         placeholder="enter phone number"
-                                                                                         value=""></div>
+                        <div class="col-md-12"><label class="labels">Email</label><input th:field="*{email}" type="text" class="form-control" placeholder="Email"></div>
                         <div class="col-md-12">
                             <label class="labels">Password</label>
-                            <!-- Hiển thị trường mật khẩu có sẵn nhưng không cho phép chỉnh sửa -->
                             <input th:field="*{password}" type="password" class="form-control" readonly>
                         </div>
-                        <!-- Thêm nút "Change Password" để hiển thị trường nhập mật khẩu mới -->
                         <div class="mt-3 text-center">
-                            <button type="button" class="btn btn-primary profile-button" onclick="showChangePassword()">
-                                Change Password
-                            </button>
+                            <button type="button" class="btn btn-primary profile-button" onclick="showChangePassword()">Change Password</button>
                         </div>
-                        <!-- Thêm trường nhập mật khẩu mới và xác nhận mật khẩu mới, mặc định ẩn đi -->
                         <div id="changePasswordFields" style="display: none;">
                             <div class="col-md-12 mt-3">
                                 <label class="labels">New Password</label>
@@ -108,54 +106,31 @@
                             </div>
                             <div class="col-md-12 mt-3">
                                 <label class="labels">Confirm New Password</label>
-                                <input id="confirmNewPassword" type="password" class="form-control"
-                                       placeholder="Confirm New Password">
+                                <input id="confirmNewPassword" type="password" class="form-control" placeholder="Confirm New Password">
                             </div>
                         </div>
-                        <div class="col-md-12"><label class="labels">Role</label><input th:field="*{role}" type="hidden"
-                                                                                        class="form-control"
-                                                                                        placeholder="enter address line 2"
-                                                                                        value="" readonly></div>
-                        <div class="col-md-12"><label class="labels">Phone Number:</label><input th:field="*{phone}"
-                                                                                                 type="text"
-                                                                                                 class="form-control"
-                                                                                                 placeholder="enter phone number"
-                                                                                                 value=""></div>
+                        <div class="col-md-12"><label class="labels">Role</label><input th:field="*{role}" type="hidden" class="form-control" readonly></div>
+                        <div class="col-md-12"><label class="labels">Phone Number</label><input th:field="*{phone}" type="text" class="form-control" placeholder="Phone Number"></div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-6"><label class="labels">Country</label><input th:field="*{country}"
-                                                                                          type="text"
-                                                                                          class="form-control"
-                                                                                          placeholder="country"
-                                                                                          value="">
-                        </div>
-                        <div class="col-md-6"><label class="labels">City</label><input th:field="*{city}" type="text"
-                                                                                       class="form-control" value=""
-                                                                                       placeholder="city"></div>
+                        <div class="col-md-6"><label class="labels">Country</label><input th:field="*{country}" type="text" class="form-control" placeholder="Country"></div>
+                        <div class="col-md-6"><label class="labels">City</label><input th:field="*{city}" type="text" class="form-control" placeholder="City"></div>
                     </div>
                     <div class="mt-5 text-center">
                         <input class="btn btn-primary profile-button" type="submit" value="Save">
                         <a class="btn btn-primary profile-button" href="/user-page">Back to home</a>
                     </div>
-
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center experience">
-                        <span>Edit Experience</span><span class="border px-3 p-1 add-experience"><i
-                            class="fa fa-plus"></i>&nbsp;Experience</span>
+                        <span>Edit Experience</span><span class="border px-3 p-1 add-experience"><i class="fa fa-plus"></i>&nbsp;Experience</span>
                     </div>
                     <br>
-                    <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text"
-                                                                                                       class="form-control"
-                                                                                                       placeholder="experience"
-                                                                                                       value=""></div>
+                    <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text" class="form-control" placeholder="Experience"></div>
                     <br>
-                    <div class="col-md-12"><label class="labels">Additional Details</label><input type="text"
-                                                                                                  class="form-control"
-                                                                                                  placeholder="additional details"
-                                                                                                  value=""></div>
+                    <div class="col-md-12"><label class="labels">Additional Details</label><input type="text" class="form-control" placeholder="Additional Details"></div>
                 </div>
             </div>
         </div>
@@ -164,20 +139,14 @@
 <script>
     function showChangePassword() {
         var changePasswordFields = document.getElementById("changePasswordFields");
-        if (changePasswordFields.style.display === "none") {
-            changePasswordFields.style.display = "block";
-        } else {
-            changePasswordFields.style.display = "none";
-        }
+        changePasswordFields.style.display = (changePasswordFields.style.display === "none") ? "block" : "none";
     }
+
     function previewAvatar(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
-                $(input).siblings('img')  // Đổi đoạn này
-                    .attr('src', e.target.result)
-                    .width(150)
-                    .height(150);
+                $(input).siblings('img').attr('src', e.target.result).width(150).height(150);
             };
             reader.readAsDataURL(input.files[0]);
         }
