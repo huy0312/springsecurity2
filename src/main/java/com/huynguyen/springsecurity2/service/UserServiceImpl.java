@@ -28,20 +28,38 @@ public class UserServiceImpl implements UserService {
     public User save(UserDto userDto) {
         User user;
         if (userDto.getId() != null && userRepository.existsById(userDto.getId())) {
-            user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            user = userRepository.findById(userDto.getId())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
             user.setEmail(userDto.getEmail());
-            if (!user.getPassword().equals(userDto.getPassword())) {
-                user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            }
             user.setFullname(userDto.getFullname());
             user.setRole(userDto.getRole());
             user.setPhone(userDto.getPhone());
             user.setEnable(userDto.getEnable());
-            user.setAvatar(userDto.getAvatar());
             user.setCity(userDto.getCity());
             user.setCountry(userDto.getCountry());
+
+            // Chỉ mã hóa mật khẩu nếu nó đã được thay đổi
+            if (userDto.getPassword() != null && !userDto.getPassword().isEmpty() &&
+                    !passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            }
+
+            // Cập nhật avatar nếu có
+            if (userDto.getAvatar() != null && !userDto.getAvatar().isEmpty()) {
+                user.setAvatar(userDto.getAvatar());
+            }
         } else {
-            user = new User(userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), userDto.getFullname(), userDto.getRole(), userDto.getPhone(), userDto.getEnable(), userDto.getAvatar(), userDto.getCountry(), userDto.getCity());
+            // Tạo mới user với tất cả các thuộc tính từ userDto
+            user = new User(userDto.getEmail(),
+                    passwordEncoder.encode(userDto.getPassword()),
+                    userDto.getFullname(),
+                    userDto.getRole(),
+                    userDto.getPhone(),
+                    userDto.getEnable(),
+                    userDto.getAvatar(),
+                    userDto.getCountry(),
+                    userDto.getCity());
         }
         return userRepository.save(user);
     }

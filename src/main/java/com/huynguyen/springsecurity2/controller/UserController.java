@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -54,24 +55,44 @@ public class UserController {
         userService.save(userDto);
         return "register";
     }
+
+
     private String saveAvatarFile(MultipartFile file) {
-        String fileName = file.getOriginalFilename();
+        String originalFileName = file.getOriginalFilename();
+        String fileExtension = "";
+
+        if (originalFileName != null && originalFileName.contains(".")) {
+            fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        }
+
+
+        String newFileName = UUID.randomUUID().toString() + fileExtension;
         String directoryPath = new File("D:/uploads/avatar").getAbsolutePath();
         File directory = new File(directoryPath);
         if (!directory.exists()) {
-            directory.mkdirs(); // Tạo thư mục nếu chưa tồn tại
+            directory.mkdirs();
         }
-        String filePath = directoryPath + File.separator + fileName;
+        String filePath = directoryPath + File.separator + newFileName;
         File dest = new File(filePath);
+
         try {
-            file.transferTo(dest); // Lưu tệp
-            System.out.println("Saved avatar file to: " + filePath); // Thêm lệnh log
+
+            String contentType = file.getContentType();
+            if (!contentType.startsWith("image/")) {
+                throw new IllegalArgumentException("Chỉ cho phép tải lên các tệp ảnh");
+            }
+
+            file.transferTo(dest);
+            System.out.println("Saved avatar file to: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
+            // Có thể ném ra ngoại lệ tùy chỉnh hoặc trả về giá trị lỗi
+            throw new RuntimeException("Failed to save avatar file", e);
         }
-        return "/uploads/avatar/" + fileName; // Trả về đường dẫn để sử dụng trong HTML
-    }
 
+        // Trả về đường dẫn để sử dụng trong HTML
+        return "/uploads/avatar/" + newFileName;
+    }
 
 
 
@@ -157,13 +178,24 @@ public class UserController {
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") UserDto userDto, @RequestParam("avatarFile") MultipartFile file) {
         User existingUser = userService.findById(userDto.getId());
+
         if (existingUser != null) {
+            // Xử lý password
             if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
                 userDto.setPassword(existingUser.getPassword());
             } else {
                 userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
             }
+
+            // Xử lý file avatar
+            if (!file.isEmpty()) {
+                String avatarPath = saveAvatarFile(file);
+                userDto.setAvatar(avatarPath);
+            } else {
+                userDto.setAvatar(existingUser.getAvatar()); // Giữ nguyên avatar hiện tại nếu không có file mới
+            }
         }
+
         userService.save(userDto); // Lưu user với avatar mới
         return "redirect:/user-page";
     }
