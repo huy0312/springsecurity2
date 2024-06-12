@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -60,7 +61,6 @@ public class UserController {
         userService.save(userDto);
         return "register";
     }
-
 
     private String saveAvatarFile(MultipartFile file) {
         String originalFileName = file.getOriginalFilename();
@@ -114,18 +114,6 @@ public class UserController {
         return "user-profile";
     }
 
-    @GetMapping("/search")
-    public String search(Model model, @RequestParam(defaultValue = "") String keyword) {
-        List<User> userList;
-        if (!keyword.isEmpty()) {
-            userList = userService.search(keyword);
-        } else {
-            userList = userService.findAll();
-        }
-        model.addAttribute("user", userList);
-        return "user-management";
-    }
-
     @GetMapping("/admin-page")
     public String adminPage(Model model, Principal principal) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
@@ -134,11 +122,18 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortField) {
+    public String list(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortField, @RequestParam(defaultValue = "") String keyword) {
+
         Sort sort = Sort.by(sortField).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
+        Page<User> userPage;
+        if (keyword == null || keyword.isEmpty()) {
+            userPage = userRepository.findAll(pageable);
+
+        } else {
+            userPage = userService.searchUser(keyword, pageable);
+        }
         long totalRecords = userService.countRecords();
-        Page<User> userPage = userService.findAll(page, size);
         model.addAttribute("totalRecords", totalRecords);
         model.addAttribute("userPage", userPage);
         return "user-management";
@@ -195,14 +190,11 @@ public class UserController {
         User existingUser = userService.findById(userDto.getId());
 
         if (existingUser != null) {
-            // Xử lý password
             if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
                 userDto.setPassword(existingUser.getPassword());
             } else {
                 userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
             }
-
-            // Xử lý file avatar
             if (!file.isEmpty()) {
                 String avatarPath = saveAvatarFile(file);
                 userDto.setAvatar(avatarPath);
@@ -210,8 +202,7 @@ public class UserController {
                 userDto.setAvatar(existingUser.getAvatar());
             }
         }
-
-        userService.save(userDto); // Lưu user với avatar mới
+        userService.save(userDto);
         return "redirect:/user-page";
     }
 

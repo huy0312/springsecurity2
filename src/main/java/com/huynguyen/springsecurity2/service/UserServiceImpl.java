@@ -105,12 +105,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> search(String keyword) {
-        List<User> userList = userRepository.search(keyword);
-        if (userList == null) {
-            return Collections.emptyList();
-        }
-        return userList;
+    public Page<User> searchUser(String keyword,Pageable pageable) {
+        return this.userRepository.searchUser(keyword,pageable);
     }
 
     @Override
@@ -148,5 +144,10 @@ public class UserServiceImpl implements UserService {
             user.setEnable(status.equals("active"));
             userRepository.save(user);
         }
+    }
+
+    @Override
+    public List<User> searchByEmailOrUsername(String keyword) {
+        return userRepository.findByEmailContainingOrFullnameContaining(keyword,keyword);
     }
 }
