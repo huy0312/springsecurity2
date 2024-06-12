@@ -45,6 +45,23 @@
                         <button type="submit" class="btn btn-primary">Search</button>
                     </div>
                 </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="sortField">Sort by:</label>
+                        <select name="sortField" class="form-control" id="sortField">
+                            <option value="id">ID</option>
+                            <option value="fullname">Full Name</option>
+                            <!-- Add more sorting fields as needed -->
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="sortOrder">Order:</label>
+                        <select name="sortOrder" class="form-control" id="sortOrder">
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                    </div>
+                </div>
             </form>
             <table class="table table-striped table-hover">
                 <thead class="table-dark">

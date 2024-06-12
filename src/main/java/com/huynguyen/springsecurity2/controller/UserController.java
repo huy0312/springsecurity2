@@ -122,10 +122,14 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortField, @RequestParam(defaultValue = "") String keyword) {
+    public String list(Model model, @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       @RequestParam(defaultValue = "id") String sortField,
+                       @RequestParam(defaultValue = "") String keyword,@RequestParam(defaultValue = "asc")String sortOrder) {
 
-        Sort sort = Sort.by(sortField).ascending();
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortField);
         Pageable pageable = PageRequest.of(page, size, sort);
+
         Page<User> userPage;
         if (keyword == null || keyword.isEmpty()) {
             userPage = userRepository.findAll(pageable);
