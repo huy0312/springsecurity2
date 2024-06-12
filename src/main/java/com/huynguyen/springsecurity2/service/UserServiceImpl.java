@@ -3,7 +3,6 @@ package com.huynguyen.springsecurity2.service;
 import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
-import com.huynguyen.springsecurity2.verification.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

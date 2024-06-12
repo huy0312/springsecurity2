@@ -125,18 +125,25 @@ public class UserController {
     public String list(Model model, @RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "10") int size,
                        @RequestParam(defaultValue = "id") String sortField,
-                       @RequestParam(defaultValue = "") String keyword,@RequestParam(defaultValue = "asc")String sortOrder) {
+                       @RequestParam(defaultValue = "") String keyword,
+                       @RequestParam(defaultValue = "asc")String sortOrder,
+                       @RequestParam(defaultValue = "")String status) {
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortField);
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<User> userPage;
         if (keyword == null || keyword.isEmpty()) {
-            userPage = userRepository.findAll(pageable);
-
+            if (status.isEmpty()) {
+                userPage = userRepository.findAll(pageable);
+            } else {
+                boolean isActive = status.equals("active");
+                userPage = userRepository.findByEnable(isActive, pageable);
+            }
         } else {
             userPage = userService.searchUser(keyword, pageable);
         }
+
         long totalRecords = userService.countRecords();
         model.addAttribute("totalRecords", totalRecords);
         model.addAttribute("userPage", userPage);
