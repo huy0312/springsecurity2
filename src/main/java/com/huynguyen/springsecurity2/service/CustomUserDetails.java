@@ -28,6 +28,9 @@ public class CustomUserDetails implements UserDetails {
     public String getFullname() {
         return user.getFullname();
     }
+    public String getAvatar(){
+        return user.getAvatar();
+    }
 
     @Override
     public String getPassword() {
