@@ -39,6 +39,7 @@ public class User {
     @Column(name = "city")
     private String city;
 
+    @Column(name="verificationCode")
     private String verificationCode;
 
 
