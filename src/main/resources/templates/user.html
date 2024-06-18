@@ -316,8 +316,7 @@
         </div>
         <div class="user-list-container">
             <div th:each="tempUser : ${users}">
-                <!-- Kiểm tra nếu người dùng không phải là admin thì mới hiển thị -->
-                <div th:if="${not #strings.contains(tempUser.role, 'ADMIN')}" class="online-list">
+                <div th:if="${not #strings.contains(tempUser.role, 'ADMIN')} and ${tempUser.id} != ${currentUser.id}" class="online-list">
                     <div class="online">
                         <img th:src="@{${tempUser.avatar}}" alt="avatar">
                     </div>

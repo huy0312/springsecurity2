@@ -20,7 +20,7 @@ public class FriendShipController {
                                     Model model) {
         friendShipService.sendFriendRequest(userId1, userId2);
         model.addAttribute("message", "Friend request sent successfully!");
-        return "user";
+        return "redirect:/user-page";
     }
 
 }

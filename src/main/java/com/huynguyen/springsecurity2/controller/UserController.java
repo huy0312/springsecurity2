@@ -162,7 +162,7 @@ public class UserController {
     public String addFriend(@PathVariable Long userId1, @PathVariable Long userId2, Model model) {
         friendShipService.sendFriendRequest(userId1, userId2);
         model.addAttribute("message", "Friend request sent successfully!");
-        return "redirect:/user";
+        return "redirect:/user-page";
     }
 
 }
