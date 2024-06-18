@@ -13,13 +13,11 @@ public class Oauth2Controller {
 
     @GetMapping("/oauth2/authorization/google")
     public String googleLogin() {
-        // Chuyển hướng đến URL xác thực OAuth 2.0 của Google
         return "redirect:/login/oauth2/code/google";
     }
 
     @GetMapping("/loginSuccess")
     public String loginSuccess() {
-        // Xử lý hành động sau khi đăng nhập thành công với OAuth 2.0
         return "redirect:/user-page";
     }
 

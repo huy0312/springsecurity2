@@ -5,30 +5,21 @@ import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
 import com.huynguyen.springsecurity2.service.CustomUserDetails;
+import com.huynguyen.springsecurity2.service.FriendShipService;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +30,9 @@ public class UserController {
 
     @Autowired
     UserDetailsService userDetailsService;
+
+    @Autowired
+    private FriendShipService friendShipService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -92,14 +86,13 @@ public class UserController {
         return "/uploads/avatar/" + newFileName;
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
     @GetMapping("/user-page")
     public String userPage(Model model, Principal principal) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+        User currentUser = userService.findByEmail(principal.getName());
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        model.addAttribute("currentUser", currentUser);
         model.addAttribute("user", userDetails);
         return "user";
     }
@@ -112,56 +105,6 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("avatarUrl", user.getAvatar());
         return "user-profile";
-    }
-
-    @GetMapping("/admin-page")
-    public String adminPage(Model model, Principal principal) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("user", userDetails);
-        return "admin";
-    }
-
-    @GetMapping("/list")
-    public String list(Model model, @RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "10") int size,
-                       @RequestParam(defaultValue = "id") String sortField,
-                       @RequestParam(defaultValue = "") String keyword,
-                       @RequestParam(defaultValue = "asc")String sortOrder,
-                       @RequestParam(defaultValue = "")String status) {
-
-        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortField);
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        Page<User> userPage;
-        if (keyword == null || keyword.isEmpty()) {
-            if (status.isEmpty()) {
-                userPage = userRepository.findAll(pageable);
-            } else {
-                boolean isActive = status.equals("active");
-                userPage = userRepository.findByEnable(isActive, pageable);
-            }
-        } else {
-            userPage = userService.searchUser(keyword, pageable);
-        }
-
-        long totalRecords = userService.countRecords();
-        model.addAttribute("totalRecords", totalRecords);
-        model.addAttribute("userPage", userPage);
-        return "user-management";
-    }
-
-    @GetMapping("/formUpdate/{id}")
-    public String formUpdate(@PathVariable("id") long id, Model model, RedirectAttributes ra) {
-        try {
-            User user = userService.get(id);
-            UserDto userDto = getUserDto(user);
-            model.addAttribute("user", userDto);
-            model.addAttribute("pageTitle", "Update Successfully");
-            return "user-form";
-        } catch (UsernameNotFoundException e) {
-            ra.addFlashAttribute("message", "User not found");
-            return "redirect:/user-page";
-        }
     }
 
     private static UserDto getUserDto(User user) {
@@ -179,47 +122,47 @@ public class UserController {
         return userDto;
     }
 
-    @PostMapping("/update-user-status")
-    public ResponseEntity<?> updateUserStatus(@RequestParam Long id, @RequestParam boolean status) {
-        try {
-            User user = userRepository.findById(id).orElse(null);
-            if (user != null) {
-                user.setEnable(status);
-                userRepository.save(user);
-                return ResponseEntity.ok().body(Collections.singletonMap("success", true));
-            } else {
-                return ResponseEntity.badRequest().body(Collections.singletonMap("success", false));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("success", false));
-        }
-    }
-
-
     @PostMapping("/save")
-    public String saveUser(@ModelAttribute("user") UserDto userDto, @RequestParam("avatarFile") MultipartFile file) {
+    public String saveUser(@ModelAttribute("user") UserDto userDto,
+                           @RequestParam("avatarFile") MultipartFile file,
+                           @RequestParam(required = false) String oldPassword,
+                           @RequestParam(required = false) String newPassword) {
         User existingUser = userService.findById(userDto.getId());
 
         if (existingUser != null) {
-            if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
-                userDto.setPassword(existingUser.getPassword());
-            } else {
-                userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            }
             if (!file.isEmpty()) {
                 String avatarPath = saveAvatarFile(file);
                 userDto.setAvatar(avatarPath);
             } else {
                 userDto.setAvatar(existingUser.getAvatar());
             }
+
+            if (newPassword != null && !newPassword.isEmpty()) {
+                if (passwordEncoder.matches(oldPassword, existingUser.getPassword())) {
+                    String encryptedPassword = passwordEncoder.encode(newPassword);
+                    userDto.setPassword(encryptedPassword);
+                } else {
+                    return "redirect:/profile?error=InvalidOldPassword";
+                }
+            } else {
+                userDto.setPassword(existingUser.getPassword());
+            }
+        } else {
+            if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+                String encryptedPassword = passwordEncoder.encode(userDto.getPassword());
+                userDto.setPassword(encryptedPassword);
+            }
         }
+
         userService.save(userDto);
-        return "redirect:/user-page";
+        return "redirect:/profile";
     }
 
-    @GetMapping("/delete")
-    public String delete(@RequestParam("id") long Id) {
-        userService.deleteById(Id);
-        return "redirect:/list";
+    @PostMapping("/addFriend/{userId1}/{userId2}")
+    public String addFriend(@PathVariable Long userId1, @PathVariable Long userId2, Model model) {
+        friendShipService.sendFriendRequest(userId1, userId2);
+        model.addAttribute("message", "Friend request sent successfully!");
+        return "redirect:/user";
     }
+
 }

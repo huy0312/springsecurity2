@@ -6,7 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{../css/home-css.css}">
-    <title>Socialbook - html css template</title>
+    <link rel="shortcut icon" th:href="@{../icons/donut.ico}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Donut</title>
     <script src="https://kit.fontawesome.com/ef7e2b893b.js" crossorigin="anonymous"></script>
 </head>
 
@@ -53,7 +56,7 @@
         <hr>
         <div class="settings-links">
             <img src="img/setting.png" alt="" class="settings-icon">
-            <a href="#">Settings & Privary <img src="img/arrow.png" alt=""></a>
+            <a th:href="@{/profile}" class="edit-profile">Settings & Privacy <img src="img/arrow.png" alt=""></a>
         </div>
 
         <div class="settings-links">
@@ -68,9 +71,8 @@
 
         <div class="settings-links">
             <img src="img/logout.png" alt="" class="settings-icon">
-            <a href="#">Logout <img src="img/arrow.png" alt=""></a>
+            <a th:href="@{/logout}" class="logout">Logout <img src="img/arrow.png" alt=""></a>
         </div>
-
     </div>
 </nav>
 
@@ -82,7 +84,7 @@
             <a href="#"><img src="img/news.png" alt="">Latest News</a>
             <a href="#"><img src="img/friends.png" alt="">Friends</a>
             <a href="#"><img src="img/group.png" alt="">Groups</a>
-            <a href="#"><img src="img/marketplace.png" alt="">marketplace</a>
+            <a href="#"><img src="img/marketplace.png" alt="">Marketplace</a>
             <a href="#"><img src="img/watch.png" alt="">Watch</a>
             <a href="#">See More</a>
         </div>
@@ -141,13 +143,15 @@
             </div>
         </div>
 
+
+
         <div class="status-field-container write-post-container">
             <div class="user-profile-box">
                 <div class="user-profile">
                     <img th:src="@{${user.avatar}}" alt="Profile Picture">
                     <div>
                         <p th:text="${user.fullname}"></p>
-                        <small>July 17 2024 , 10:18AM</small>
+                        <small>July 17 2024, 10:18AM</small>
                     </div>
                 </div>
                 <div>
@@ -168,7 +172,7 @@
                     <div><img src="img/share.png" alt="">35</div>
                 </div>
                 <div class="post-profile-picture">
-                    <img src="" alt=""> <i class=" fas fa-caret-down"></i>
+                    <img src="" alt=""> <i class="fas fa-caret-down"></i>
                 </div>
             </div>
         </div>
@@ -177,7 +181,7 @@
                 <div class="user-profile">
                     <img src="img/profile-pic.png" alt="">
                     <div>
-                        <p> Alex Carry</p>
+                        <p>Alex Carry</p>
                         <small>August 13 1999, 09.18 pm</small>
                     </div>
                 </div>
@@ -199,7 +203,7 @@
                     <div><img src="img/share.png" alt="">35</div>
                 </div>
                 <div class="post-profile-picture">
-                    <img src="" alt=""> <i class=" fas fa-caret-down"></i>
+                    <img src="" alt=""> <i class="fas fa-caret-down"></i>
                 </div>
             </div>
         </div>
@@ -208,7 +212,7 @@
                 <div class="user-profile">
                     <img src="" alt="">
                     <div>
-                        <p> Alex Carry</p>
+                        <p>Alex Carry</p>
                         <small>August 13 1999, 09.18 pm</small>
                     </div>
                 </div>
@@ -230,7 +234,7 @@
                     <div><img src="img/share.png" alt="">35</div>
                 </div>
                 <div class="post-profile-picture">
-                    <img src="" alt=""> <i class=" fas fa-caret-down"></i>
+                    <img src="" alt=""> <i class="fas fa-caret-down"></i>
                 </div>
             </div>
         </div>
@@ -239,7 +243,7 @@
                 <div class="user-profile">
                     <img src="img/profile-pic.png" alt="">
                     <div>
-                        <p> Alex Carry</p>
+                        <p>Alex Carry</p>
                         <small>August 13 1999, 09.18 pm</small>
                     </div>
                 </div>
@@ -261,7 +265,7 @@
                     <div><img src="img/share.png" alt="">35</div>
                 </div>
                 <div class="post-profile-picture">
-                    <img src="" alt=""> <i class=" fas fa-caret-down"></i>
+                    <img src="" alt=""> <i class="fas fa-caret-down"></i>
                 </div>
             </div>
         </div>
@@ -278,11 +282,11 @@
         <div class="events">
             <div class="left-event">
                 <h4>13</h4>
-                <span>august</span>
+                <span>August</span>
             </div>
             <div class="right-event">
                 <h4>Social Media</h4>
-                <p> <i class="fas fa-map-marker-alt"></i> wisdom em Park</p>
+                <p> <i class="fas fa-map-marker-alt"></i> Wisdom em Park</p>
                 <a href="#">More Info</a>
             </div>
         </div>
@@ -293,7 +297,7 @@
             </div>
             <div class="right-event">
                 <h4>Mobile Marketing</h4>
-                <p><i class="fas fa-map-marker-alt"></i> wisdom em Park</p>
+                <p><i class="fas fa-map-marker-alt"></i> Wisdom em Park</p>
                 <a href="#">More Info</a>
             </div>
         </div>
@@ -306,29 +310,23 @@
             <img src="img/advertisement.png" class="advertisement-image" alt="">
         </div>
 
+        <!-- Add Friend -->
         <div class="heading-link">
-            <h4>Conversation</h4>
-            <a href="">Hide Chat</a>
+            <h4>Add Friend</h4>
         </div>
-
-        <div class="online-list">
-            <div class="online">
-                <img src="img/member-1.png" alt="">
+        <div class="user-list-container">
+            <div th:each="tempUser : ${users}">
+                <!-- Kiểm tra nếu người dùng không phải là admin thì mới hiển thị -->
+                <div th:if="${not #strings.contains(tempUser.role, 'ADMIN')}" class="online-list">
+                    <div class="online">
+                        <img th:src="@{${tempUser.avatar}}" alt="avatar">
+                    </div>
+                    <p th:text="${tempUser.fullname}">User Name</p>
+                    <form th:action="@{/addFriend/{userId1}/{userId2}(userId1=${currentUser.id}, userId2=${tempUser.id})}" method="post" style="display:inline;">
+                        <button class="btn btn-primary pull-right" type="submit">Add Friend</button>
+                    </form>
+                </div>
             </div>
-            <p>Alison Mina</p>
-        </div>
-
-        <div class="online-list">
-            <div class="online">
-                <img src="img/member-2.png" alt="">
-            </div>
-            <p>Jackson Aston</p>
-        </div>
-        <div class="online-list">
-            <div class="online">
-                <img src="img/member-3.png" alt="">
-            </div>
-            <p>Samona Rose</p>
         </div>
     </div>
 </div>

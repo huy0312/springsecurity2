@@ -41,13 +41,11 @@ public class UserServiceImpl implements UserService {
             user.setCity(userDto.getCity());
             user.setCountry(userDto.getCountry());
 
-
-            if (userDto.getPassword() != null && !userDto.getPassword().isEmpty() &&
-                    !passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
-                user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+                if (!passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
+                    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+                }
             }
-
-
             if (userDto.getAvatar() != null && !userDto.getAvatar().isEmpty()) {
                 user.setAvatar(userDto.getAvatar());
             }
@@ -64,6 +62,8 @@ public class UserServiceImpl implements UserService {
         }
         return userRepository.save(user);
     }
+
+
 
     @Override
     public List<User> findAll() {
@@ -147,5 +147,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> searchByEmailOrUsername(String keyword) {
         return userRepository.findByEmailContainingOrFullnameContaining(keyword,keyword);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

@@ -34,4 +34,10 @@ public interface UserService {
     void updateUserStatus(Long id, String status);
 
     public List<User> searchByEmailOrUsername(String keyword);
+
+    public List<User> getAllUsers();
+
+    public User findByEmail(String email);
+
+
 }
