@@ -23,11 +23,45 @@
         <ul class="navlogo">
             <li>
                 <img src="img/notification.png" id="notification-icon" onclick="toggleNotifications()">
-                <span id="notification-count" class="badge badge-danger">0</span>
+                <span id="notification-count" class="badge badge-danger">3</span>
                 <div id="notification-dropdown" class="notification-dropdown">
                     <div id="notification-items">
+                        <!-- Friend Request 1 -->
+                        <div class="notification-item">
+                            <img src="img/user1.png" alt="User">
+                            <div class="notification-text">
+                                <p>User1 sent you a friend request</p>
+                                <div class="notification-actions">
+                                    <button class="accept-button" onclick="acceptRequest('User1')">Accept</button>
+                                    <button class="decline-button" onclick="declineRequest('User1')">Decline</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Friend Request 2 -->
+                        <div class="notification-item">
+                            <img src="img/user2.png" alt="User">
+                            <div class="notification-text">
+                                <p>User2 sent you a friend request</p>
+                                <div class="notification-actions">
+                                    <button class="accept-button" onclick="acceptRequest('User2')">Accept</button>
+                                    <button class="decline-button" onclick="declineRequest('User2')">Decline</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Friend Request 3 -->
+                        <div class="notification-item">
+                            <img src="img/user3.png" alt="User">
+                            <div class="notification-text">
+                                <p>User3 sent you a friend request</p>
+                                <div class="notification-actions">
+                                    <button class="accept-button" onclick="acceptRequest('User3')">Accept</button>
+                                    <button class="decline-button" onclick="declineRequest('User3')">Decline</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </li>
             <li><img src="img/inbox.png"></li>
             <li><img src="img/video.png"></li>
@@ -41,7 +75,6 @@
         <div class="profile-image online" onclick="UserSettingToggle()">
             <img th:src="@{${user.avatar}}" alt="Profile Picture">
         </div>
-
     </div>
     <div class="user-settings">
         <div class="profile-darkButton">
@@ -69,17 +102,14 @@
             <img src="img/setting.png" alt="" class="settings-icon">
             <a th:href="@{/profile}" class="edit-profile">Settings & Privacy <img src="img/arrow.png" alt=""></a>
         </div>
-
         <div class="settings-links">
             <img src="img/help.png" alt="" class="settings-icon">
             <a href="#">Help & Support <img src="img/arrow.png" alt=""></a>
         </div>
-
         <div class="settings-links">
             <img src="img/Display.png" alt="" class="settings-icon">
             <a href="#">Display & Accessibility <img src="img/arrow.png" alt=""></a>
         </div>
-
         <div class="settings-links">
             <img src="img/logout.png" alt="" class="settings-icon">
             <a th:href="@{/logout}" class="logout">Logout <img src="img/arrow.png" alt=""></a>
@@ -154,8 +184,6 @@
             </div>
         </div>
 
-
-
         <div class="status-field-container write-post-container">
             <div class="user-profile-box">
                 <div class="user-profile">
@@ -174,7 +202,6 @@
                     laborum nihil accusantium odit laboriosam, sed sit autem! <a
                             href="#">#This_Post_is_Better!!!!</a> </p>
                 <img src="img/feed-image-1.png" alt="">
-
             </div>
             <div class="post-reaction">
                 <div class="activity-icons">
@@ -205,7 +232,6 @@
                     laborum nihil accusantium odit laboriosam, sed sit autem! <a
                             href="#">#This_Post_is_Bigger!!!!</a> </p>
                 <img src="img/feed-image-2.png" alt="">
-
             </div>
             <div class="post-reaction">
                 <div class="activity-icons">
@@ -236,7 +262,6 @@
                     laborum nihil accusantium odit laboriosam, sed sit autem! <a
                             href="#">#This_Post_is_faster!!!!</a> </p>
                 <img src="img/feed-image-3.png" alt="">
-
             </div>
             <div class="post-reaction">
                 <div class="activity-icons">
@@ -267,7 +292,6 @@
                     laborum nihil accusantium odit laboriosam, sed sit autem! <a
                             href="#">#This_Post_is_perfect!!!!</a> </p>
                 <img src="img/feed-image-4.png" alt="">
-
             </div>
             <div class="post-reaction">
                 <div class="activity-icons">
@@ -333,13 +357,11 @@
                     </div>
                     <p th:text="${tempUser.fullname}">User Name</p>
                     <form th:action="@{/addFriend/{userId1}/{userId2}(userId1=${currentUser.id}, userId2=${tempUser.id})}" method="post" style="display:inline;">
-                        <button class="btn btn-primary pull-right" type="submit">Add Friend</button>
+                        <button class="btn btn-primary pull-right" type="submit" onclick="toggleFriendRequest(this)">Add Friend</button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 
 <!-- Chat window -->

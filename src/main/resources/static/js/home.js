@@ -91,5 +91,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('chat-content').style.display = 'none';
     document.getElementById('chat-toggle-icon').textContent = '+';
 });
+function toggleNotifications() {
+    const dropdown = document.getElementById('notification-dropdown');
+    if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+        dropdown.style.display = 'block';
+    } else {
+        dropdown.style.display = 'none';
+    }
+}
+
+
+
+
+
 
 
