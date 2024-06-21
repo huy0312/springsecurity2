@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{../css/home-css.css}">
     <link rel="shortcut icon" th:href="@{../icons/donut.ico}"/>
+    <script th:inline="javascript">
+        var notificationCount = /*[[${notificationCount}]]*/ 0;
+    </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <title>Donut</title>
@@ -15,9 +18,17 @@
 
 <body>
 <nav class="navbar">
-    <div class="nav-left"><img class="logo" src="img/logo.png" alt="">
+    <div class="nav-left">
+        <img class="logo" src="img/logo.png" alt="">
         <ul class="navlogo">
-            <li><img src="img/notification.png"></li>
+            <li>
+                <img src="img/notification.png" id="notification-icon" onclick="toggleNotifications()">
+                <span id="notification-count" class="badge badge-danger">0</span>
+                <div id="notification-dropdown" class="notification-dropdown">
+                    <div id="notification-items">
+                    </div>
+                </div>
+            </li>
             <li><img src="img/inbox.png"></li>
             <li><img src="img/video.png"></li>
         </ul>
@@ -38,7 +49,7 @@
                 <img th:src="@{${user.avatar}}" alt="Profile Picture">
                 <div>
                     <p th:text="${user.fullname}"></p>
-                    <a href="#">See your profile</a>
+                    <a th:href="@{/user-wall}">See your profile</a>
                 </div>
             </div>
             <div id="dark-button" onclick="darkModeON()">
@@ -275,7 +286,7 @@
     <!-- sidebar------------ -->
     <div class="right-sidebar">
         <div class="heading-link">
-            <h4>Events</h4>
+            <h4>Your page</h4>
             <a href="">See All</a>
         </div>
 
@@ -329,10 +340,25 @@
         </div>
     </div>
 </div>
-<footer id="footer">
-    <p>&copy; Copyright 2021 - Socialbook All Rights Reserved</p>
-</footer>
 
+
+<!-- Chat window -->
+<div class="chat-window-container" id="chat-window-container">
+    <div class="chat-header" onclick="toggleChatWindow()">
+        <span id="chat-friend-name">Chat</span>
+        <span id="chat-toggle-icon" class="toggle-icon">+</span>
+    </div>
+    <div class="chat-content" id="chat-content">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Type a message">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <p>&copy; Copyright 2021 - Social book All Rights Reserved</p>
+</footer>
 <script type="text/javascript" th:src="@{/js/home.js}"></script>
 </body>
 </html>
