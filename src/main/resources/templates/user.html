@@ -35,7 +35,8 @@
                                     </form>
 
                                     <form th:action="@{/cancelFriend}" method="post">
-                                        <input type="hidden" name="requestId" th:value="${request.id}" />
+                                        <input type="hidden" name="userId1" th:value="${request.user1.id}" />
+                                        <input type="hidden" name="userId2" th:value="${request.user2.id}" />
                                         <button type="submit">Cancel</button>
                                     </form>
                                 </div>

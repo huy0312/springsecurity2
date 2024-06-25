@@ -56,8 +56,9 @@ public class FriendShipServiceImpl implements FriendShipService{
     public FriendShip cancelFriendRequest(Long userId1, Long userId2) {
         FriendShip friendship = friendShipRepository.findByUser1IdAndUser2Id(userId1, userId2);
         if (friendship != null && friendship.getStatus() == FriendShipStatus.PENDING) {
-            friendShipRepository.delete(friendship);
+            friendship.setStatus(FriendShipStatus.REJECTED);
             friendship.setCreatedAt(LocalDateTime.now());
+            friendShipRepository.save(friendship);
             return friendship;
         }
         return null;

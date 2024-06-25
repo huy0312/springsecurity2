@@ -37,6 +37,5 @@ public class FriendShipController {
         friendShipService.cancelFriendRequest(userid1, userid2);
         ra.addFlashAttribute("message", "Friend request cancelled!");
         return "redirect:/user-page";
-
     }
 }
