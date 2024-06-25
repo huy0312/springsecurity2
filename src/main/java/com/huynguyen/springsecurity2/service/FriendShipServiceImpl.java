@@ -27,13 +27,11 @@ public class FriendShipServiceImpl implements FriendShipService{
 
     @Override
     public FriendShip sendFriendRequest(Long userId1, Long userId2) {
-        // Kiểm tra xem mối quan hệ này đã tồn tại hay chưa
         FriendShip existingFriendship = friendShipRepository.findByUser1IdAndUser2Id(userId1, userId2);
         if (existingFriendship == null) {
             User user1 = userRepository.findById(userId1).orElse(null);
             User user2 = userRepository.findById(userId2).orElse(null);
             FriendShipStatus status = FriendShipStatus.PENDING;
-
             if (user1 != null && user2 != null) {
                 FriendShip newFriendship = new FriendShip(user1, user2, status);
                 return friendShipRepository.save(newFriendship);
@@ -59,11 +57,21 @@ public class FriendShipServiceImpl implements FriendShipService{
         FriendShip friendship = friendShipRepository.findByUser1IdAndUser2Id(userId1, userId2);
         if (friendship != null && friendship.getStatus() == FriendShipStatus.PENDING) {
             friendShipRepository.delete(friendship);
+            friendship.setCreatedAt(LocalDateTime.now());
             return friendship;
         }
         return null;
     }
 
+    @Override
+    public boolean canSendFriendRequest(User userid1, User userid2) {
+        Optional<FriendShip> lastRejectedRequest = friendShipRepository.findTopByUser1AndUser2AndStatusOrderByCreatedAtDesc(userid1, userid2, "REJECTED");
+        if (!lastRejectedRequest.isPresent()) {
+            return true;
+        }
+        LocalDateTime twentyMinutesAgo = LocalDateTime.now().minusMinutes(20);
+        return lastRejectedRequest.get().getCreatedAt().isBefore(twentyMinutesAgo);
+    }
 
     @Override
     public List<FriendShip> getFriendRequests(Long userid) {

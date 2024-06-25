@@ -28,11 +28,10 @@ public class FriendShip {
     public FriendShip() {
     }
 
-    public FriendShip(User user1, User user2, FriendShipStatus status, LocalDateTime createdAt) {
+    public FriendShip(User user1, User user2, FriendShipStatus status) {
         this.user1 = user1;
         this.user2 = user2;
         this.status = status;
-        this.createdAt = createdAt;
     }
 
     public FriendShipStatus getStatus() {

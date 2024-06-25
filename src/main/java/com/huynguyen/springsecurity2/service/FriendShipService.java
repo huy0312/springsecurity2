@@ -18,4 +18,7 @@ public interface FriendShipService {
 
     public FriendShip cancelFriendRequest(Long userId1, Long userId2);
 
+    boolean canSendFriendRequest(User userid1, User userid2);
+
+
 }

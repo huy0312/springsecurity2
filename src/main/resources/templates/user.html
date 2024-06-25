@@ -7,9 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{../css/home-css.css}">
     <link rel="shortcut icon" th:href="@{../icons/donut.ico}"/>
-    <script th:inline="javascript">
-        var notificationCount = /*[[${notificationCount}]]*/ 0;
-    </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <title>Donut</title>
@@ -32,14 +29,12 @@
                             <div class="notification-text">
                                 <p th:text="${request.user1.fullname + ' sent you a friend request'}">User sent you a friend request</p>
                                 <div class="notification-actions">
-                                    <!-- Form để chấp nhận lời mời kết bạn -->
                                     <form th:action="@{/acceptFriend}" method="post">
                                         <input type="hidden" name="requestId" th:value="${request.id}" />
                                         <button type="submit">Accept</button>
                                     </form>
 
-                                    <!-- Form để từ chối lời mời kết bạn -->
-                                    <form th:action="@{/rejectFriend}" method="post">
+                                    <form th:action="@{/cancelFriend}" method="post">
                                         <input type="hidden" name="requestId" th:value="${request.id}" />
                                         <button type="submit">Cancel</button>
                                     </form>
