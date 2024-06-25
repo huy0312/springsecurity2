@@ -1,5 +1,6 @@
 package com.huynguyen.springsecurity2.service;
 
+import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.FriendShip;
 import com.huynguyen.springsecurity2.entity.User;
 
@@ -14,5 +15,7 @@ public interface FriendShipService {
     public List<FriendShip> getFriendRequests(Long userid);
 
     public User getUserById(Long userid);
+
+    public FriendShip cancelFriendRequest(Long userId1, Long userId2);
 
 }

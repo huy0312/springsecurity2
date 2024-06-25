@@ -2,6 +2,7 @@ package com.huynguyen.springsecurity2.controller;
 
 
 import com.huynguyen.springsecurity2.dto.UserDto;
+import com.huynguyen.springsecurity2.entity.FriendShip;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
 import com.huynguyen.springsecurity2.service.CustomUserDetails;
@@ -36,8 +37,6 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
 
 
     @GetMapping("/registration")
@@ -91,7 +90,9 @@ public class UserController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
         User currentUser = userService.findByEmail(principal.getName());
         List<User> users = userService.getAllUsers();
+        List<FriendShip> pendingRequests = friendShipService.getFriendRequests(currentUser.getId());
         model.addAttribute("users", users);
+        model.addAttribute("pendingRequests", pendingRequests);
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("user", userDetails);
         return "user";
@@ -124,9 +125,7 @@ public class UserController {
 
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") UserDto userDto,
-                           @RequestParam("avatarFile") MultipartFile file,
-                           @RequestParam(required = false) String oldPassword,
-                           @RequestParam(required = false) String newPassword) {
+                           @RequestParam("avatarFile") MultipartFile file) {
         User existingUser = userService.findById(userDto.getId());
 
         if (existingUser != null) {
@@ -136,24 +135,7 @@ public class UserController {
             } else {
                 userDto.setAvatar(existingUser.getAvatar());
             }
-
-            if (newPassword != null && !newPassword.isEmpty()) {
-                if (passwordEncoder.matches(oldPassword, existingUser.getPassword())) {
-                    String encryptedPassword = passwordEncoder.encode(newPassword);
-                    userDto.setPassword(encryptedPassword);
-                } else {
-                    return "redirect:/profile?error=InvalidOldPassword";
-                }
-            } else {
-                userDto.setPassword(existingUser.getPassword());
-            }
-        } else {
-            if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
-                String encryptedPassword = passwordEncoder.encode(userDto.getPassword());
-                userDto.setPassword(encryptedPassword);
-            }
         }
-
         userService.save(userDto);
         return "redirect:/profile";
     }
@@ -164,5 +146,4 @@ public class UserController {
         model.addAttribute("message", "Friend request sent successfully!");
         return "redirect:/user-page";
     }
-
 }

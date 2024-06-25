@@ -1,13 +1,16 @@
 package com.huynguyen.springsecurity2.service;
 
+import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.FriendShip;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.entity.enums.FriendShipStatus;
 import com.huynguyen.springsecurity2.repository.FriendShipRepository;
 import com.huynguyen.springsecurity2.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,40 +26,53 @@ public class FriendShipServiceImpl implements FriendShipService{
 
 
     @Override
-    public FriendShip sendFriendRequest(Long userid1, Long userid2) {
-        Optional<User> user1 = userRepository.findById(userid1);
-        Optional<User> user2 = userRepository.findById(userid2);
+    public FriendShip sendFriendRequest(Long userId1, Long userId2) {
+        // Kiểm tra xem mối quan hệ này đã tồn tại hay chưa
+        FriendShip existingFriendship = friendShipRepository.findByUser1IdAndUser2Id(userId1, userId2);
+        if (existingFriendship == null) {
+            User user1 = userRepository.findById(userId1).orElse(null);
+            User user2 = userRepository.findById(userId2).orElse(null);
+            FriendShipStatus status = FriendShipStatus.PENDING;
 
-        if (user1.isPresent() && user2.isPresent()) {
-            FriendShip friendship = new FriendShip();
-            friendship.setUser1(user1.get());
-            friendship.setUser2(user2.get());
-            friendship.setStatus(FriendShipStatus.PENDING);
-            return friendShipRepository.save(friendship);
-        } else {
-            throw new RuntimeException("Users not found");
+            if (user1 != null && user2 != null) {
+                FriendShip newFriendship = new FriendShip(user1, user2, status);
+                return friendShipRepository.save(newFriendship);
+            }
         }
+        return null;
     }
 
     @Override
     public FriendShip acceptFriendRequest(Long friendShipId) {
-        Optional<FriendShip> friendship = friendShipRepository.findById(friendShipId);
-        if (friendship.isPresent()) {
-            FriendShip existingFriendship = friendship.get();
+        Optional<FriendShip> friendshipOpt = friendShipRepository.findById(friendShipId);
+        if (friendshipOpt.isPresent()) {
+            FriendShip existingFriendship = friendshipOpt.get();
             existingFriendship.setStatus(FriendShipStatus.ACCEPTED);
             return friendShipRepository.save(existingFriendship);
-        } else {
-            throw new RuntimeException("Friendship not found");
         }
+        throw new RuntimeException("Friendship not found");
     }
 
     @Override
+    @Transactional
+    public FriendShip cancelFriendRequest(Long userId1, Long userId2) {
+        FriendShip friendship = friendShipRepository.findByUser1IdAndUser2Id(userId1, userId2);
+        if (friendship != null && friendship.getStatus() == FriendShipStatus.PENDING) {
+            friendShipRepository.delete(friendship);
+            return friendship;
+        }
+        return null;
+    }
+
+
+    @Override
     public List<FriendShip> getFriendRequests(Long userid) {
-        return friendShipRepository.findByIdOrStatus(userid, FriendShipStatus.PENDING);
+        return friendShipRepository.findByUser2IdAndStatus(userid, FriendShipStatus.PENDING);
     }
 
     @Override
     public User getUserById(Long userid) {
         return userRepository.findById(userid).orElse(null);
     }
+
 }

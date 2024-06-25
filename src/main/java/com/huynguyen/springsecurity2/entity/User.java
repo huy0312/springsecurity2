@@ -1,6 +1,7 @@
 package com.huynguyen.springsecurity2.entity;
 
 
+import com.huynguyen.springsecurity2.entity.enums.Role;
 import jakarta.persistence.*;
 
 @Entity
