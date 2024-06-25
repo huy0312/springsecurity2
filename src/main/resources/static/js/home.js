@@ -148,6 +148,14 @@ function rejectFriendRequest(button) {
         });
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    var onlineLists = document.querySelectorAll('.online-list');
+    for (var i = 3; i < onlineLists.length; i++) {
+        onlineLists[i].style.display = 'none';
+    }
+});
+
+
 
 
 

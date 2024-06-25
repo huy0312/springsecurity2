@@ -355,7 +355,7 @@
     }
 
     .post-upload-textarea {
-        padding: 20px 0px 0px 55px;
+        margin-top:10px;
     }
 
     .post-upload-textarea textarea {
@@ -956,5 +956,13 @@
     .left-sidebar .shortcut-links a:hover {
         background-color: #e0e0e0;
     }
+    .post-upload-textarea {
+        position: relative;
+    }
 
+    .post-button {
+        position: absolute;
+        right: 0;
+        width: 100px;
+    }
 
