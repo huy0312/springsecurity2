@@ -100,6 +100,53 @@ function toggleNotifications() {
     }
 }
 
+function acceptFriendRequest(button) {
+    var form = button.form;
+    var formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to accept friend request.');
+            }
+            return response.text();
+        })
+        .then(data => {
+            alert(data); // Hiển thị thông báo thành công
+            // Cập nhật giao diện tại đây nếu cần
+        })
+        .catch(error => {
+            console.error('Error accepting friend request:', error);
+            alert('Failed to accept friend request.'); // Hiển thị thông báo lỗi
+        });
+}
+
+function rejectFriendRequest(button) {
+    var form = button.form;
+    var formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to reject friend request.');
+            }
+            return response.text();
+        })
+        .then(data => {
+            alert(data); // Hiển thị thông báo thành công
+            // Cập nhật giao diện tại đây nếu cần
+        })
+        .catch(error => {
+            console.error('Error rejecting friend request:', error);
+            alert('Failed to reject friend request.'); // Hiển thị thông báo lỗi
+        });
+}
 
 
 
