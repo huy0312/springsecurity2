@@ -16,7 +16,9 @@
 <body>
 <nav class="navbar">
     <div class="nav-left">
-        <img class="logo" src="img/logo.png" alt="">
+        <a th:href="@{/user-page}" title="Home">
+            <img class="logo" src="img/logo.png" alt="Logo">
+        </a>
         <ul class="navlogo">
             <li>
                 <img src="img/notification.png" id="notification-icon" onclick="toggleNotifications()">
@@ -112,7 +114,6 @@
         </div>
         <br>
         <div class="important-links">
-
             <a href="#"><img src="img/news.png" alt="">Latest News</a>
             <a href="#"><img src="img/friends.png" alt="">Friends</a>
             <a href="#"><img src="img/group.png" alt="">Groups</a>
@@ -164,7 +165,6 @@
                     <small>Public <i class="fas fa-caret-down"></i></small>
                 </div>
             </div>
-
             <div class="post-upload-textarea">
                 <textarea name="" placeholder="What's on your mind?" id="" cols="30" rows="3"></textarea>
                 <div class="add-post-links">
@@ -172,10 +172,10 @@
                     <a href="#"><img src="img/photo.png" alt="">Photo/Video</a>
                     <a href="#"><img src="img/feeling.png" alt="">Feeling Activity</a>
                 </div>
+                <br>
+                <button type="button" class="btn btn-primary post-button" onclick="postContent()">Post</button>
             </div>
         </div>
-
-
         <div class="status-field-container write-post-container">
             <div class="user-profile-box">
                 <div class="user-profile">
@@ -318,18 +318,9 @@
                 <a href="#">More Info</a>
             </div>
         </div>
-
-        <div class="heading-link">
-            <h4>Advertisement</h4>
-            <a href="">Close</a>
-        </div>
-        <div class="advertisement">
-            <img src="img/advertisement.png" class="advertisement-image" alt="">
-        </div>
-
         <!-- Add Friend -->
         <div class="heading-link">
-            <h4>Add Friend</h4>
+            <h4>Suggest a friend request</h4>
         </div>
         <div class="user-list-container">
             <div th:each="tempUser : ${users}">

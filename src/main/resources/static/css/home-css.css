@@ -42,22 +42,32 @@
     img.logo {
         width: 160px;
         margin-right: 45px;
+        cursor: pointer;
     }
 
     .nav-left,
     .nav-right {
         display: flex;
         align-items: center;
+        cursor: pointer;
+
+
     }
 
     .nav-left ul li {
         display: inline-block;
         list-style: none;
+
     }
 
     ul.navlogo li img {
         width: 24px;
-        margin: 0px 13px;
+        margin: 10px 13px 0px 13px;ư
+        transition: filter 0.3s ease;
+    }
+    ul.navlogo li img:hover {
+        filter: brightness(70%);
+        transform: translateY(5px);
     }
 
     .profile-image img {
@@ -74,7 +84,7 @@
         background: var(--body-color);
         border-radius: 20px;
         align-items: center;
-        padding: 0px 15px;
+        padding: 0px 30px;
     }
 
     .search-box img {
@@ -302,19 +312,19 @@
     }
 
     .story.story2 {
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(/img/status-2.png) no-repeat center center /cover;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(//img/status-2.png) no-repeat center center /cover;
     }
 
     .story.story3 {
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(/img/status-3.png) no-repeat center center /cover;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(//img/status-3.png) no-repeat center center /cover;
     }
 
     .story.story4 {
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(/img/status-4.png) no-repeat center center /cover;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(//img/status-4.png) no-repeat center center /cover;
     }
 
     .story.story5 {
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(/img/status-5.png) no-repeat center center /cover;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(//img/status-5.png) no-repeat center center /cover;
     }
 
     .story.story1 img {
@@ -715,7 +725,7 @@
         display: none;
         position: absolute;
         top: 100%;
-        right: 20px;
+        left: 320px;
         width: 300px;
         background-color: white;
         border: 1px solid #ccc;

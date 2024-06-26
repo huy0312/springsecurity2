@@ -11,8 +11,8 @@ function UserSettingToggle(){
 function darkModeON(){
     darkBtn.classList.toggle("dark-mode-on");
     document.body.classList.toggle("dark-theme");
-};
-// home.js
+}
+
 
 function toggleNotifications() {
     var dropdown = document.getElementById('notification-dropdown');
