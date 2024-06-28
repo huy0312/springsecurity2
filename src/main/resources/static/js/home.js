@@ -32,18 +32,24 @@ function displayFriendRequest(notification) {
         '<p>' + notification.fullname + ' sent you a friend request</p>';
     notificationItems.appendChild(item);
 }
-// Toggle chat window visibility
-function toggleChatWindow() {
-    const chatContent = document.getElementById('chat-content');
-    const chatToggleIcon = document.getElementById('chat-toggle-icon');
-    if (chatContent.style.display === 'none' || chatContent.style.display === '') {
-        chatContent.style.display = 'flex';
-        chatToggleIcon.textContent = '-';
-    } else {
-        chatContent.style.display = 'none';
-        chatToggleIcon.textContent = '+';
-    }
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const chatHeader = document.querySelector('.chat-header');
+    const chatWindowContainer = document.querySelector('.chat-window-container');
+    const chatContent = document.querySelector('.chat-content');
+
+    chatHeader.addEventListener('click', function() {
+        const chatToggleIcon = document.getElementById('chat-toggle-icon');
+        chatWindowContainer.classList.toggle('expanded');
+        chatContent.classList.toggle('expanded');
+        if (chatContent.style.display === 'none' || chatContent.style.display === '') {
+            chatContent.style.display = 'flex';
+            chatToggleIcon.textContent = '-';
+        } else {
+            chatContent.style.display = 'none';
+            chatToggleIcon.textContent = '+';
+        }
+    });
+});
 
 // Open chat window for selected friend
 function openChatWindow(friendName, friendId) {
