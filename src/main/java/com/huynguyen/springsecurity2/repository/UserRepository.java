@@ -23,4 +23,6 @@ public interface UserRepository extends  JpaRepository<User,Long> {
     Page<User> findByEnable(boolean enable, Pageable pageable);
 
 
+
+
 }

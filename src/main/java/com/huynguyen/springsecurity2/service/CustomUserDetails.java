@@ -1,5 +1,6 @@
 package com.huynguyen.springsecurity2.service;
 
+import com.huynguyen.springsecurity2.entity.FriendShip;
 import com.huynguyen.springsecurity2.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,6 +32,8 @@ public class CustomUserDetails implements UserDetails {
     public String getAvatar(){
         return user.getAvatar();
     }
+
+
 
     @Override
     public String getPassword() {

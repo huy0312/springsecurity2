@@ -158,4 +158,17 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    @Override
+    public boolean resetPassword(Long id, String password) {
+        User user = userRepository.findById(id).orElse(null);
+        if(user != null) {
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+
 }

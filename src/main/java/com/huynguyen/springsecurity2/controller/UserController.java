@@ -3,10 +3,12 @@ package com.huynguyen.springsecurity2.controller;
 
 import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.FriendShip;
+import com.huynguyen.springsecurity2.entity.Message;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
 import com.huynguyen.springsecurity2.service.CustomUserDetails;
 import com.huynguyen.springsecurity2.service.FriendShipService;
+import com.huynguyen.springsecurity2.service.MessageService;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -34,6 +37,9 @@ public class UserController {
 
     @Autowired
     private FriendShipService friendShipService;
+
+    @Autowired
+    private MessageService messageService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -91,10 +97,14 @@ public class UserController {
         User currentUser = userService.findByEmail(principal.getName());
         List<User> users = userService.getAllUsers();
         List<FriendShip> pendingRequests = friendShipService.getFriendRequests(currentUser.getId());
+        List<FriendShip> friends = friendShipService.getFriends(currentUser.getId());
+        int friendCount = friends.size();
         model.addAttribute("users", users);
         model.addAttribute("pendingRequests", pendingRequests);
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("user", userDetails);
+        model.addAttribute("friends", friends);
+        model.addAttribute("friendCount", friendCount);
         return "user";
     }
 

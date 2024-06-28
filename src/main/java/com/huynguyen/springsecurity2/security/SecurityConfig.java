@@ -37,10 +37,14 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request
+
                                 .requestMatchers("/admin-page").hasAuthority("ADMIN")
                                 .requestMatchers("/user-page").hasAuthority("USER")
                                 .requestMatchers("/login").hasAuthority("LOGIN")
                                 .requestMatchers("/registration", "/css/**","/avatar/**").permitAll()
+                                .requestMatchers("/forgot-password").permitAll()
+                                .requestMatchers("/reset-password","/reset-password-request","/reset-password-confirm").permitAll()
+                                .requestMatchers("/uploads/**").permitAll()
                                 .anyRequest().authenticated())
 //                .oauth2Login(oauth2 ->
 //                        oauth2
