@@ -37,7 +37,6 @@ public class ResetPasswordController {
             return "reset-password";
         }
         String encodedPassword = passwordEncoder.encode(newPassword);
-
         boolean resetSuccess = userService.resetPassword(userId, encodedPassword);
         if (!resetSuccess) {
             model.addAttribute("error", "Failed to reset password");

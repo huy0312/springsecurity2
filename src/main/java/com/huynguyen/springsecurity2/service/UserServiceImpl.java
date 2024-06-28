@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
     public boolean resetPassword(Long id, String password) {
         User user = userRepository.findById(id).orElse(null);
         if(user != null) {
-            user.setPassword(passwordEncoder.encode(password));
+            user.setPassword(password);
             userRepository.save(user);
             return true;
         }
