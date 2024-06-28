@@ -883,13 +883,14 @@
     }
 
     .chat-header {
-        background-color: #f0f0f0;
+        background-color: #4e69a2;
         padding: 10px;
         cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #ccc;
+
     }
 
     .chat-content {
@@ -938,8 +939,79 @@
     }
 
     .chat-content {
-        transition: height 0.3s; /* Thêm chuyển đổi cho height */
+        transition: height 0.3s;
     }
+    .side-chat-window {
+        position: fixed;
+        bottom: 20px;
+        width: 350px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: none;
+        z-index: 1000;
+        right: 350px;
+        height: 400px;
+    }
+
+    .side-chat-header {
+        background-color: #4e69a2; /* Màu nền tiêu đề */
+        color: #fff; /* Màu chữ */
+        padding: 10px; /* Khoảng cách trong tiêu đề */
+        display: flex; /* Sắp xếp theo chiều ngang */
+        justify-content: space-between; /* Căn lề đều 2 đầu */
+        align-items: center; /* Căn chỉnh theo chiều dọc */
+    }
+
+    .side-chat-header span.toggle-icon {
+        cursor: pointer; /* Con trỏ chuột thành bàn tay */
+    }
+
+    .side-chat-content {
+        padding: 10px; /* Khoảng cách trong nội dung chat */
+        height: calc(100% - 60px); /* Chiều cao tính toán với phần header */
+        overflow-y: auto; /* Cho phép cuộn nội dung khi vượt quá chiều cao */
+    }
+
+    .side-chat-input {
+        display: flex; /* Sắp xếp theo chiều ngang */
+        justify-content: space-between; /* Căn lề đều 2 đầu */
+        align-items: center; /* Căn chỉnh theo chiều dọc */
+        padding: 10px; /* Khoảng cách trong vùng nhập tin nhắn */
+    }
+
+    .side-chat-input textarea {
+        flex: 1;
+        height: 40px;
+        resize: none;
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin-right: 10px;
+    }
+
+    .side-chat-input button {
+        width: 60px;
+        height: 40px;
+        background-color: #4e69a2;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+    #side-chat-avatar {
+        width: 40px; /* Độ rộng của avatar */
+        height: 40px; /* Chiều cao của avatar */
+        border-radius: 50%; /* Làm tròn góc */
+        margin-right: 10px; /* Khoảng cách với tên */
+    }
+
+    #side-chat-friend-name {
+        flex: 1; /* Chia đều không gian còn lại */
+        overflow: hidden; /* Ẩn nội dung vượt quá phần tử */
+        white-space: nowrap; /* Ngăn không cho các từ bị ngắt dòng */
+        text-overflow: ellipsis; /* Khi tràn chữ, sẽ có dấu chấm lửng */
+    }
+
+
 
 
 

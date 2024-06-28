@@ -51,40 +51,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Open chat window for selected friend
-function openChatWindow(friendName, friendId) {
-    document.getElementById('chat-friend-name').textContent = friendName;
-    document.getElementById('chat-window-container').style.display = 'block';
-    document.getElementById('chat-content').style.display = 'flex';
-    document.getElementById('chat-toggle-icon').textContent = '-';
-    // Load previous messages with friendId
-    loadMessages(friendId);
+function openChatWindow(userId, fullname, avatar) {
+    document.getElementById('side-chat-friend-name').innerText = fullname;
+    document.getElementById('side-chat-window').style.display = 'block';
+    var avatarImg = document.getElementById('side-chat-avatar');
+    if (avatarImg) {
+        avatarImg.src = avatar;
+    }
 }
 
-// Load previous messages (this is a placeholder function)
-function loadMessages(friendId) {
-    const chatMessages = document.getElementById('chat-messages');
-    chatMessages.innerHTML = ''; // Clear previous messages
-    // Fetch and display previous messages with friendId
-    // This should be replaced with actual logic to fetch messages from the server
+function closeSideChatWindow() {
+    // Close the side chat window
+    document.getElementById('side-chat-window').style.display = 'none';
 }
 
-// Send message function
-function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const message = input.value.trim();
-    if (message === "") return;
-
-    const messageElement = document.createElement("div");
-    messageElement.classList.add("message", 'user1');  // Assuming user1 is sending the message
-    messageElement.textContent = message;
-
-    const chatMessages = document.getElementById('chat-messages');
-    chatMessages.appendChild(messageElement);
-
-    input.value = "";
-    scrollToBottom('chat-messages');
+function toggleMainChatWindow() {
+    // Toggle the main chat window between minimized and expanded states
+    var chatWindow = document.getElementById('chat-window-container');
+    chatWindow.classList.toggle('minimized');
+    var icon = document.getElementById('chat-toggle-icon');
+    icon.textContent = chatWindow.classList.contains('minimized') ? '+' : '-';
 }
+
+function sendSideMessage() {
+    // Implement functionality to send a message from the side chat window
+    var messageInput = document.getElementById('side-message-input').value;
+    // You can handle sending the message logic here
+}
+
 
 // Scroll to bottom function
 function scrollToBottom(id) {
