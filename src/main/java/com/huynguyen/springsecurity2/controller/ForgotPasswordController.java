@@ -22,21 +22,30 @@ public class ForgotPasswordController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/forgot-password")
-    public String forgotPassword() {
-        return "forgot-password";
-    }
 
     @PostMapping("/reset-password-request")
     public String resetPasswordRequest(@RequestParam("email") String email, HttpServletRequest request, RedirectAttributes ra) {
         User user = userService.findByEmail(email);
         if (user == null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("error", "User not found");
+            request.getSession().setAttribute("error", "User not found");
             return "redirect:/forgot-password?error=User not found";
         }
         request.getSession().setAttribute("user", user);
         return "redirect:/reset-password";
     }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        String error = (String) session.getAttribute("error");
+        if(error != null) {
+            model.addAttribute("error", error);
+            session.removeAttribute("error");
+
+        }
+        return "forgot-password";
+    }
+
+
 }
 
