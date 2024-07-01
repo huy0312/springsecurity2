@@ -1,1 +1,1 @@
-Small homework
+# Social Demo Project
