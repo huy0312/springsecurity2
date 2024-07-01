@@ -20,5 +20,7 @@ public interface FriendShipService {
 
     boolean canSendFriendRequest(User userid1, User userid2);
 
+    public List<FriendShip> getFriends(Long userid);
+
 
 }

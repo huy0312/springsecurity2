@@ -1,12 +1,15 @@
 package com.huynguyen.springsecurity2.controller;
 
+import com.huynguyen.springsecurity2.entity.FriendShip;
 import com.huynguyen.springsecurity2.service.FriendShipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -26,16 +29,25 @@ public class FriendShipController {
     }
 
     @PostMapping("/acceptFriend")
-    public String acceptFriendRequest(@RequestParam("requestId") Long quesId, RedirectAttributes ra) {
-        friendShipService.acceptFriendRequest(quesId);
-        ra.addFlashAttribute("message", "Friend request accepted!");
-        return "redirect:/user-page";
+    @ResponseBody
+    public ResponseEntity<String> acceptFriendRequest(@RequestParam("requestId") Long requestId) {
+        FriendShip friendship = friendShipService.acceptFriendRequest(requestId);
+        if (friendship != null) {
+            return ResponseEntity.ok("Friend request accepted successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to accept friend request.");
+        }
     }
 
     @PostMapping("/cancelFriend")
-    public String cancelFriendRequest(@RequestParam("userId1") Long userid1, @RequestParam("userId2") Long userid2, RedirectAttributes ra) {
-        friendShipService.cancelFriendRequest(userid1, userid2);
-        ra.addFlashAttribute("message", "Friend request cancelled!");
-        return "redirect:/user-page";
+    @ResponseBody
+    public ResponseEntity<String> rejectFriendRequest(@RequestParam("userId1") Long userId1,
+                                                      @RequestParam("userId2") Long userId2) {
+        FriendShip friendship = friendShipService.cancelFriendRequest(userId1, userId2);
+        if (friendship != null) {
+            return ResponseEntity.ok("Friend request rejected successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to reject friend request.");
+        }
     }
 }

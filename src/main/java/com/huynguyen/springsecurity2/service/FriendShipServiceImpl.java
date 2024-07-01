@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,6 +73,14 @@ public class FriendShipServiceImpl implements FriendShipService{
         }
         LocalDateTime twentyMinutesAgo = LocalDateTime.now().minusMinutes(20);
         return lastRejectedRequest.get().getCreatedAt().isBefore(twentyMinutesAgo);
+    }
+
+    @Override
+    public List<FriendShip> getFriends(Long userid) {
+        List<FriendShip> friendShips = new ArrayList<>();
+        friendShips.addAll(friendShipRepository.findByUser1IdAndStatus(userid, FriendShipStatus.ACCEPTED));
+        friendShips.addAll(friendShipRepository.findByUser2IdAndStatus(userid, FriendShipStatus.ACCEPTED));
+        return friendShips;
     }
 
     @Override
