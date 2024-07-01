@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ResetPasswordController {
@@ -19,6 +20,8 @@ public class ResetPasswordController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private boolean resetSuccess = false;
 
     @GetMapping("/reset-password")
     public String showResetPasswordForm(Model model) {
@@ -30,20 +33,32 @@ public class ResetPasswordController {
     public String confirmResetPassword(@RequestParam("userId") Long userId,
                                        @RequestParam("newPassword") String newPassword,
                                        @RequestParam("confirmPassword") String confirmPassword,
-                                       Model model) {
+                                       Model model,
+                                       RedirectAttributes redirectAttributes) {
 
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("error", "Passwords do not match");
             return "reset-password";
         }
+
         String encodedPassword = passwordEncoder.encode(newPassword);
         boolean resetSuccess = userService.resetPassword(userId, encodedPassword);
+
         if (!resetSuccess) {
             model.addAttribute("error", "Failed to reset password");
             return "reset-password";
         }
-        model.addAttribute("success", true);
-        return "reset-password";
+
+        redirectAttributes.addFlashAttribute("resetSuccess", true);
+        return "redirect:/login-delayed";
     }
+
+    @GetMapping("/login-delayed")
+    public String loginDelayed() {
+        return "login-delayed";
+
+    }
+
+
 
 }

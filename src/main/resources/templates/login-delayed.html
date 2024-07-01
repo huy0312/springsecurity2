@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Delayed</title>
+</head>
+<body>
+<h2>Password reset successfully!</h2>
+<p>You will be redirected to login page shortly...</p>
+<!-- JavaScript to redirect after 5 seconds -->
+<script>
+  setTimeout(function() {
+    window.location.href = "/login";
+  }, 3000); // 5000 milliseconds = 5 seconds
+</script>
+</body>
+</html>
