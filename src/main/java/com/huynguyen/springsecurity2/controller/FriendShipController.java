@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 @Controller
 public class FriendShipController {
@@ -19,6 +16,14 @@ public class FriendShipController {
     @Autowired
     FriendShipService friendShipService;
 
+    /**
+     * Sends a friend request from one user to another.
+     *
+     * @param userId1 the ID of the user sending the friend request
+     * @param userId2 the ID of the user receiving the friend request
+     * @param model the model to add attributes to
+     * @return a redirect to the user page with a success message
+     */
     @PostMapping("/send")
     public String sendFriendRequest(@RequestParam("userId1") Long userId1,
                                     @RequestParam("userId2") Long userId2,
@@ -28,6 +33,12 @@ public class FriendShipController {
         return "redirect:/user-page";
     }
 
+    /**
+     * Accepts a friend request.
+     *
+     * @param requestId the ID of the friend request to accept
+     * @return a response entity with a success or failure message
+     */
     @PostMapping("/acceptFriend")
     @ResponseBody
     public ResponseEntity<String> acceptFriendRequest(@RequestParam("requestId") Long requestId) {
@@ -39,6 +50,13 @@ public class FriendShipController {
         }
     }
 
+    /**
+     * Rejects a friend request.
+     *
+     * @param userId1 the ID of the user who sent the friend request
+     * @param userId2 the ID of the user who received the friend request
+     * @return a response entity with a success or failure message
+     */
     @PostMapping("/cancelFriend")
     @ResponseBody
     public ResponseEntity<String> rejectFriendRequest(@RequestParam("userId1") Long userId1,
