@@ -977,7 +977,7 @@ img.coverImage {
     display: flex; /* Sắp xếp theo chiều ngang */
     justify-content: space-between; /* Căn lề đều 2 đầu */
     align-items: center; /* Căn chỉnh theo chiều dọc */
-    padding: 10px; /* Khoảng cách trong vùng nhập tin nhắn */
+    padding-top: 275px; /* Khoảng cách trong vùng nhập tin nhắn */
 }
 
 .side-chat-input textarea {
