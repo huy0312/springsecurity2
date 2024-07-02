@@ -1,14 +1,10 @@
 package com.huynguyen.springsecurity2.controller;
 
-
 import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.FriendShip;
-import com.huynguyen.springsecurity2.entity.Message;
 import com.huynguyen.springsecurity2.entity.User;
-import com.huynguyen.springsecurity2.repository.UserRepository;
 import com.huynguyen.springsecurity2.service.CustomUserDetails;
 import com.huynguyen.springsecurity2.service.FriendShipService;
-import com.huynguyen.springsecurity2.service.MessageService;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,7 +21,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -33,25 +28,39 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private FriendShipService friendShipService;
 
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
+    /**
+     * Displays the registration page.
+     *
+     * @param userDto the user data transfer object
+     * @return the name of the view for registration
+     */
     @GetMapping("/registration")
     public String registration(@ModelAttribute("user") UserDto userDto) {
         return "register";
     }
 
+    /**
+     * Handles the user registration.
+     *
+     * @param userDto the user data transfer object
+     * @param model   the model to which attributes are added
+     * @param file    the avatar file uploaded by the user
+     * @return the name of the view for registration
+     */
     @PostMapping("/registration")
     public String saveUser(@ModelAttribute("user") UserDto userDto, Model model, @RequestParam("avatarFile") MultipartFile file) {
+        if (userDto.getRole() == null || userDto.getRole().isEmpty()) {
+            userDto.setRole("USER");
+        }
+        userDto.setEnable(false);
+
+        String verificationCode = UUID.randomUUID().toString();
+        userDto.setVerificationCode(verificationCode);
         if (!file.isEmpty()) {
             String avatarPath = saveAvatarFile(file);
             userDto.setAvatar(avatarPath);
@@ -61,6 +70,12 @@ public class UserController {
         return "register";
     }
 
+    /**
+     * Saves the avatar file to the specified directory.
+     *
+     * @param file the avatar file uploaded by the user
+     * @return the path of the saved avatar file
+     */
     private String saveAvatarFile(MultipartFile file) {
         String originalFileName = file.getOriginalFilename();
         String fileExtension = "";
@@ -80,7 +95,7 @@ public class UserController {
             String contentType = file.getContentType();
             assert contentType != null;
             if (!contentType.startsWith("image/")) {
-                throw new IllegalArgumentException("Only image file are accepted");
+                throw new IllegalArgumentException("Only image files are accepted");
             }
             file.transferTo(dest);
             System.out.println("Saved avatar file to: " + filePath);
@@ -91,6 +106,13 @@ public class UserController {
         return "/uploads/avatar/" + newFileName;
     }
 
+    /**
+     * Displays the user page with user details, friends, and friend requests.
+     *
+     * @param model     the model to which attributes are added
+     * @param principal the authenticated user's principal
+     * @return the name of the view for the user page
+     */
     @GetMapping("/user-page")
     public String userPage(Model model, Principal principal) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
@@ -108,6 +130,13 @@ public class UserController {
         return "user";
     }
 
+    /**
+     * Displays the user profile page.
+     *
+     * @param model          the model to which attributes are added
+     * @param authentication the authenticated user's authentication
+     * @return the name of the view for the user profile page
+     */
     @GetMapping("/profile")
     public String profile(Model model, Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -118,21 +147,13 @@ public class UserController {
         return "user-profile";
     }
 
-    private static UserDto getUserDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
-        userDto.setPassword(user.getPassword());
-        userDto.setFullname(user.getFullname());
-        userDto.setRole(user.getRole());
-        userDto.setPhone(user.getPhone());
-        userDto.setEnable(user.getEnable());
-        userDto.setAvatar(user.getAvatar());
-        userDto.setCity(user.getCity());
-        userDto.setCountry(user.getCountry());
-        return userDto;
-    }
-
+    /**
+     * Saves the user details, including the avatar file if provided.
+     *
+     * @param userDto the user data transfer object
+     * @param file    the avatar file uploaded by the user
+     * @return a redirect to the profile page
+     */
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") UserDto userDto,
                            @RequestParam("avatarFile") MultipartFile file) {
@@ -150,6 +171,14 @@ public class UserController {
         return "redirect:/profile";
     }
 
+    /**
+     * Sends a friend request from one user to another.
+     *
+     * @param userId1 the ID of the user sending the friend request
+     * @param userId2 the ID of the user receiving the friend request
+     * @param model   the model to which attributes are added
+     * @return a redirect to the user page
+     */
     @PostMapping("/addFriend/{userId1}/{userId2}")
     public String addFriend(@PathVariable Long userId1, @PathVariable Long userId2, Model model) {
         friendShipService.sendFriendRequest(userId1, userId2);

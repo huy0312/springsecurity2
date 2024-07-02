@@ -1,5 +1,6 @@
 package com.huynguyen.springsecurity2.repository;
 
+import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public interface UserRepository extends  JpaRepository<User,Long> {
 
     Page<User> findByEnable(boolean enable, Pageable pageable);
 
-
+    User findByVerificationCode(String verificationCode);
 
 
 }
