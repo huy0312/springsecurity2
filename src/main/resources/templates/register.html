@@ -4,43 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <link rel="stylesheet" th:href="@{../css/style.css}">
+    <link rel="stylesheet" th:href="@{../css/register.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-
-
-        /* Custom styling for select element */
-        .custom-select {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .custom-select select {
-            display: none; /* Hide default select element */
-        }
-
-        /* Style the arrow inside the select element */
-        .custom-select::after {
-            content: '\25BC'; /* Unicode character for down arrow */
-            position: absolute;
-            top: 50%;
-            right: 15px;
-            transform: translateY(-50%);
-        }
-
-        /* Style the options (the list items) */
-        .custom-select select option {
-            padding: 12px;
-            background-color: #0e2433;
-            color: white;
-        }
-
-        /* Add hover effect to options */
-        .custom-select select option:hover {
-            background-color: #1a476b;
-        }
-    </style>
 </head>
 <body>
 
@@ -87,10 +52,7 @@
                    placeholder="Enter your city" required>
         </div>
         <div class="form-group">
-            <label for="role">Sign up as:</label>
-            <select th:field="*{role}" id="role" name="role" class="custom-select">
-                <option value="USER">USER</option>
-            </select>
+            <input type="hidden" th:field="*{role}" value="USER">
         </div>
         <div>
             <label for="avatarFile">Avatar:</label>
