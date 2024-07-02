@@ -81,6 +81,7 @@
                     <th>Phone Number</th>
                     <th>City</th>
                     <th>Status</th>
+                    <th>Role</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -96,9 +97,16 @@
                     <td th:text="${tempUser.city}"></td>
                     <td>
                         <div class="form-check form-switch">
-                            <input th:checked="${tempUser.enable}" class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value="yes" checked>
+                            <input th:checked="${tempUser.enable}" class="form-check-input" type="checkbox"
+                                   id="mySwitch" name="darkmode" value="yes" checked>
                             <label class="form-check-label" for="mySwitch">Active</label>
                         </div>
+                    </td>
+                    <td>
+                        <select class="form-control role-dropdown" data-user-id="${tempUser.id}">
+                            <option value="USER" th:selected="${tempUser.role == 'USER'}">USER</option>
+                            <option value="ADMIN" th:selected="${tempUser.role == 'ADMIN'}">ADMIN</option>
+                        </select>
                     </td>
                     <td>
                         <a th:href="@{/delete(id=${tempUser.id})}" class="btn btn-danger btn-sm"
@@ -112,7 +120,8 @@
                 <div class="hint-text">Showing
                     <b th:text="${(userPage.number * userPage.size) + 1}" th:if="${userPage}"></b>
                     to
-                    <b th:text="${(userPage.number * userPage.size) + userPage.content.size()}" th:if="${userPage.content.size() gt 0}"></b>
+                    <b th:text="${(userPage.number * userPage.size) + userPage.content.size()}"
+                       th:if="${userPage.content.size() gt 0}"></b>
                     of
                     <b th:text="${userPage.totalElements}"></b> entries
                 </div>
@@ -139,7 +148,8 @@
     </div>
 </div>
 <!-- Success Modal -->
-<div id="successModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+<div id="successModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -159,29 +169,47 @@
 </div>
 </body>
 <script>
-    $(document).ready(function(){
-        $('input[type="checkbox"]').change(function(){
+    $(document).ready(function () {
+        $('input[type="checkbox"]').change(function () {
             var checked = $(this).prop("checked");
             var userId = $(this).closest('tr').find('td:first').text();
             var status = checked ? 1 : 0;
             $.ajax({
                 url: '/update-user-status',
                 type: 'POST',
-                data: { id: userId, status: status },
-                success: function(response) {
-                    if(response.success) {
+                data: {id: userId, status: status},
+                success: function (response) {
+                    if (response.success) {
                         $('#successModal').modal('show');
                     } else {
                         alert("Failed to update user status.");
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     alert("An error occurred while updating user status.");
                 }
             });
         });
+
+        $('.role-dropdown').change(function () {
+            var selectedRole = $(this).val();
+            var userId = $(this).data('user-id');
+            $.ajax({
+                url: '/update-user-role',
+                type: 'POST',
+                data: {id: userId, role: selectedRole},
+                success: function (response) {
+                    if (response.success) {
+                        $('#successModal').modal('show');
+                    } else {
+                        alert("Failed to update user role.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while updating user role.");
+                }
+            });
+        });
     });
-
-
 </script>
 </html>
