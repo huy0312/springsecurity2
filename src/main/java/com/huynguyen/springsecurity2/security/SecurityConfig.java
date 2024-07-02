@@ -44,6 +44,7 @@ public class SecurityConfig {
                                 .requestMatchers("/registration", "/css/**","/avatar/**").permitAll()
                                 .requestMatchers("/forgot-password").permitAll()
                                 .requestMatchers("/reset-password","/reset-password-request","/reset-password-confirm").permitAll()
+                                .requestMatchers("/login-delayed").permitAll()
                                 .requestMatchers("/uploads/**").permitAll()
                                 .anyRequest().authenticated())
 //                .oauth2Login(oauth2 ->
