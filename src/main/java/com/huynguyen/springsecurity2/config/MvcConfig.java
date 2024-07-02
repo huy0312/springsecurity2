@@ -1,4 +1,4 @@
-package com.huynguyen.springsecurity2.security;
+package com.huynguyen.springsecurity2.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
