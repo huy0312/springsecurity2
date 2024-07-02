@@ -1,8 +1,9 @@
-package com.huynguyen.springsecurity2.service;
+package com.huynguyen.springsecurity2.serviceImpl;
 
 import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
+import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,8 +24,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RegistrationService registrationService;
 
     @Override
     public User save(UserDto userDto) {
@@ -62,7 +61,6 @@ public class UserServiceImpl implements UserService {
         }
         return userRepository.save(user);
     }
-
 
 
     @Override
@@ -103,36 +101,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> searchUser(String keyword,Pageable pageable) {
-        return this.userRepository.searchUser(keyword,pageable);
+    public Page<User> searchUser(String keyword, Pageable pageable) {
+        return this.userRepository.searchUser(keyword, pageable);
     }
 
     @Override
     public long countRecords() {
         return userRepository.count();
-    }
-
-    @Override
-    public void sendVerificationCode(String email, String verificationCode) {
-
-        String subject = "Verification Code";
-        String text = "Your verification code is: " + verificationCode;
-        registrationService.sendEmail(email, subject, text);
-
-        User user = userRepository.findByEmail(email);
-        user.setVerificationCode(verificationCode);
-        userRepository.save(user);
-    }
-
-    @Override
-    public boolean confirmVerificationCode(String email, String verificationCode) {
-        User user = userRepository.findByEmail(email);
-        if(verificationCode.equals(user.getVerificationCode())) {
-            user.setEnable(true);
-            userRepository.save(user);
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -146,7 +121,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> searchByEmailOrUsername(String keyword) {
-        return userRepository.findByEmailContainingOrFullnameContaining(keyword,keyword);
+        return userRepository.findByEmailContainingOrFullnameContaining(keyword, keyword);
     }
 
     @Override
@@ -162,7 +137,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean resetPassword(Long id, String password) {
         User user = userRepository.findById(id).orElse(null);
-        if(user != null) {
+        if (user != null) {
             user.setPassword(password);
             userRepository.save(user);
             return true;
@@ -170,5 +145,39 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Override
+    public UserDto findUserByVerificationCode(String verificationCode) {
+        User user = userRepository.findByVerificationCode(verificationCode);
+        return user != null ? getUser(user) : null;
+    }
+
+    @Override
+    public void updateUserRole(Long id, String role) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setRole(role);
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("User not found with id " + id);
+        }
+    }
+
+    @Override
+    public UserDto getUser(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        userDto.setFullname(user.getFullname());
+        userDto.setRole(user.getRole());
+        userDto.setPhone(user.getPhone());
+        userDto.setEnable(user.getEnable());
+        userDto.setAvatar(user.getAvatar());
+        userDto.setCity(user.getCity());
+        userDto.setCountry(user.getCountry());
+        userDto.setVerificationCode(user.getVerificationCode());
+        return userDto;
+    }
 
 }

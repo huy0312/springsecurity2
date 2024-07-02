@@ -12,11 +12,11 @@ public interface UserService {
 
     User save(UserDto userDto);
 
-    public List<User> findAll();
+    List<User> findAll();
 
     User findById(Long id);
 
-    public User get(Long id);
+    User get(Long id);
 
     void deleteById(Long id);
 
@@ -24,23 +24,23 @@ public interface UserService {
 
     Page<User> searchUser(String keyword, Pageable pageable);
 
-    public long countRecords();
-
-    public void sendVerificationCode(String email, String verificationCode);
-
-    public boolean confirmVerificationCode(String email, String verificationCode);
-
+    long countRecords();
 
     void updateUserStatus(Long id, String status);
 
-    public List<User> searchByEmailOrUsername(String keyword);
+    List<User> searchByEmailOrUsername(String keyword);
 
-    public List<User> getAllUsers();
+    List<User> getAllUsers();
 
-    public User findByEmail(String email);
+    User findByEmail(String email);
 
-    public boolean resetPassword(Long id, String password);
+    boolean resetPassword(Long id, String password);
 
+    UserDto findUserByVerificationCode(String verificationCode);
 
+    void updateUserRole(Long id, String role);
+
+    UserDto getUser(User user);
 
 }
+
