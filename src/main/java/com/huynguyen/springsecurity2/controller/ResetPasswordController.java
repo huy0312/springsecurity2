@@ -20,8 +20,6 @@ public class ResetPasswordController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private boolean resetSuccess = false;
-
     /**
      * Displays the reset password form.
      *
