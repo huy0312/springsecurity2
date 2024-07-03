@@ -53,9 +53,6 @@ public class UserServiceImpl implements UserService {
                 user.setAvatar(userDto.getAvatar());
             }
         } else {
-            String verificationCode = UUID.randomUUID().toString();
-            userDto.setVerificationCode(verificationCode);
-
             user = new User(userDto.getEmail(),
                     passwordEncoder.encode(userDto.getPassword()),
                     userDto.getFullname(),
@@ -64,12 +61,11 @@ public class UserServiceImpl implements UserService {
                     userDto.getEnable(),
                     userDto.getAvatar(),
                     userDto.getCountry(),
-                    userDto.getCity(),
-                    userDto.getVerificationCode());
-
-            emailService.sendEmail(userDto.getEmail(), verificationCode);
+                    userDto.getCity(), emailService.generateVerificationCode());
         }
-        return userRepository.save(user);
+        userRepository.save(user);
+        emailService.sendEmail(user, "Email Verification");
+        return user;
     }
 
 

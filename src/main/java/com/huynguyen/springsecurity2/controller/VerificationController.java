@@ -1,6 +1,7 @@
 package com.huynguyen.springsecurity2.controller;
 
 import com.huynguyen.springsecurity2.dto.UserDto;
+import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,10 +38,6 @@ public class VerificationController {
     public String successPage() {
         return "success";
     }
-
-
-
-
 
 
 }

@@ -4,6 +4,7 @@ import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.FriendShip;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.service.CustomUserDetails;
+import com.huynguyen.springsecurity2.service.EmailService;
 import com.huynguyen.springsecurity2.service.FriendShipService;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @Controller
@@ -32,6 +34,10 @@ public class UserController {
 
     @Autowired
     private FriendShipService friendShipService;
+
+    @Autowired
+    private EmailService emailService;
+
 
     /**
      * Displays the registration page.
@@ -59,15 +65,15 @@ public class UserController {
         }
         userDto.setEnable(false);
 
-        String verificationCode = UUID.randomUUID().toString();
+        String verificationCode = emailService.generateVerificationCode();
         userDto.setVerificationCode(verificationCode);
         if (!file.isEmpty()) {
             String avatarPath = saveAvatarFile(file);
             userDto.setAvatar(avatarPath);
         }
-        model.addAttribute("message", "Registered Successfully");
         userService.save(userDto);
-        return "register";
+        model.addAttribute("message", "Verification email sent to " + userDto.getEmail());
+        return "redirect:/verify";
     }
 
     /**
@@ -170,7 +176,6 @@ public class UserController {
         userService.save(userDto);
         return "redirect:/profile";
     }
-
     /**
      * Sends a friend request from one user to another.
      *

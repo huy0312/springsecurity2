@@ -41,24 +41,14 @@ public class SecurityConfig {
                                 .requestMatchers("/admin-page").hasAuthority("ADMIN")
                                 .requestMatchers("/user-page").hasAuthority("USER")
                                 .requestMatchers("/login").hasAuthority("LOGIN")
-                                .requestMatchers("/registration", "/css/**","/avatar/**").permitAll()
+                                .requestMatchers("/registration", "/css/**", "/avatar/**").permitAll()
                                 .requestMatchers("/verify").permitAll()
                                 .requestMatchers("/success").permitAll()
                                 .requestMatchers("/forgot-password").permitAll()
-                                .requestMatchers("/reset-password","/reset-password-request","/reset-password-confirm").permitAll()
+                                .requestMatchers("/reset-password", "/reset-password-request", "/reset-password-confirm").permitAll()
                                 .requestMatchers("/login-delayed").permitAll()
                                 .requestMatchers("/uploads/**").permitAll()
                                 .anyRequest().authenticated())
-//                .oauth2Login(oauth2 ->
-//                        oauth2
-//                                .loginPage("/login")
-//                                .userInfoEndpoint(userInfo ->
-//                                        userInfo
-//                                                .userService(oauth2UserService())
-//                                )
-//                                .successHandler(oauth2LoginSuccessHandler())
-//                                .loginProcessingUrl("/login").permitAll())
-
                 .formLogin(form ->
                         form
                                 .loginPage("/login")
