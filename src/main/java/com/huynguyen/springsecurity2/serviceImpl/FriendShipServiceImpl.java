@@ -1,11 +1,11 @@
-package com.huynguyen.springsecurity2.service;
+package com.huynguyen.springsecurity2.serviceImpl;
 
-import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.FriendShip;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.entity.enums.FriendShipStatus;
 import com.huynguyen.springsecurity2.repository.FriendShipRepository;
 import com.huynguyen.springsecurity2.repository.UserRepository;
+import com.huynguyen.springsecurity2.service.FriendShipService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 
 @Service
-public class FriendShipServiceImpl implements FriendShipService{
+public class FriendShipServiceImpl implements FriendShipService {
 
     @Autowired
     private FriendShipRepository friendShipRepository;

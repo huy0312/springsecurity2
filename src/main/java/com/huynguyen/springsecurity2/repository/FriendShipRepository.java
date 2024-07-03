@@ -18,15 +18,6 @@ public interface FriendShipRepository  extends JpaRepository<FriendShip, Long> {
 
     FriendShip findByUser1IdAndUser2Id(Long user1Id, Long user2Id);
 
-    List<FriendShip> findByUser1IdOrUser2Id(Long user1Id, Long user2Id);
-
-    List<FriendShip> findByStatus(FriendShipStatus status);
-
-
-    List<FriendShip> findByIdOrStatus(Long userId, FriendShipStatus status);
-
-    List<FriendShip> findByUser1IdAndUser2IdAndStatus(Long user1Id, Long user2Id, FriendShipStatus status);
-
     Optional<FriendShip> findTopByUser1AndUser2AndStatusOrderByCreatedAtDesc(User user1, User user2, String status);
 
 }
