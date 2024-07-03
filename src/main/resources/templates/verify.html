@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verify</title>
+</head>
+<body>
+<h1>Verify Your Email</h1>
+<form th:action="@{/verify}" method="post">
+    <label>Verification Code:</label>
+    <input type="text" name="code" required />
+    <button type="submit">Verify</button>
+</form>
+<p th:text="${message}"></p>
+<p th:text="${error}"></p>
+</body>
+</html>

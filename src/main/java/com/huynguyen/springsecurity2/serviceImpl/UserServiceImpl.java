@@ -3,6 +3,7 @@ package com.huynguyen.springsecurity2.serviceImpl;
 import com.huynguyen.springsecurity2.dto.UserDto;
 import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
+import com.huynguyen.springsecurity2.service.EmailService;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,6 +26,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public User save(UserDto userDto) {
@@ -49,6 +53,9 @@ public class UserServiceImpl implements UserService {
                 user.setAvatar(userDto.getAvatar());
             }
         } else {
+            String verificationCode = UUID.randomUUID().toString();
+            userDto.setVerificationCode(verificationCode);
+
             user = new User(userDto.getEmail(),
                     passwordEncoder.encode(userDto.getPassword()),
                     userDto.getFullname(),
@@ -57,7 +64,10 @@ public class UserServiceImpl implements UserService {
                     userDto.getEnable(),
                     userDto.getAvatar(),
                     userDto.getCountry(),
-                    userDto.getCity(), userDto.getVerificationCode());
+                    userDto.getCity(),
+                    userDto.getVerificationCode());
+
+            emailService.sendEmail(userDto.getEmail(), verificationCode);
         }
         return userRepository.save(user);
     }
@@ -120,6 +130,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUserStatusByCode(Long id, boolean status) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setEnable(true);
+        userRepository.save(user);
+    }
+
+    @Override
     public List<User> searchByEmailOrUsername(String keyword) {
         return userRepository.findByEmailContainingOrFullnameContaining(keyword, keyword);
     }
@@ -176,7 +193,6 @@ public class UserServiceImpl implements UserService {
         userDto.setAvatar(user.getAvatar());
         userDto.setCity(user.getCity());
         userDto.setCountry(user.getCountry());
-        userDto.setVerificationCode(user.getVerificationCode());
         return userDto;
     }
 

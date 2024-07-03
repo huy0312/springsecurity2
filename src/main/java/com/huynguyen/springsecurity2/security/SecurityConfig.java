@@ -42,6 +42,8 @@ public class SecurityConfig {
                                 .requestMatchers("/user-page").hasAuthority("USER")
                                 .requestMatchers("/login").hasAuthority("LOGIN")
                                 .requestMatchers("/registration", "/css/**","/avatar/**").permitAll()
+                                .requestMatchers("/verify").permitAll()
+                                .requestMatchers("/success").permitAll()
                                 .requestMatchers("/forgot-password").permitAll()
                                 .requestMatchers("/reset-password","/reset-password-request","/reset-password-confirm").permitAll()
                                 .requestMatchers("/login-delayed").permitAll()

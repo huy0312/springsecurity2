@@ -28,6 +28,8 @@ public interface UserService {
 
     void updateUserStatus(Long id, String status);
 
+    void updateUserStatusByCode(Long id, boolean status);
+
     List<User> searchByEmailOrUsername(String keyword);
 
     List<User> getAllUsers();
@@ -41,6 +43,8 @@ public interface UserService {
     void updateUserRole(Long id, String role);
 
     UserDto getUser(User user);
+
+
 
 }
 

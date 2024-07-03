@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Verification Successful</title>
+</head>
+<body>
+<h1>Verification Successful</h1>
+<p>Your account has been successfully verified. You will be redirected to the login page in 5 seconds.</p>
+<p>If you are not redirected, <a th:href="@{/login}">click here</a>.</p>
+
+<script type="text/javascript">
+  setTimeout(function(){
+    window.location.href = '/login';
+  }, 5000);
+</script>
+</body>
+</html>
