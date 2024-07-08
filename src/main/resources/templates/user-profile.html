@@ -6,7 +6,9 @@
     <title>User Profile Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css"/>
     <link rel="shortcut icon" th:href="@{../icons/boy.ico}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <style>
         body {
             background: #f2f2f2;
@@ -42,17 +44,6 @@
             color: #495057;
         }
 
-        .add-experience:hover {
-            background: #6c757d;
-            color: #fff;
-            cursor: pointer;
-            border: solid 1px #6c757d;
-        }
-
-        .hidden-input {
-            display: none;
-        }
-
         .avatar-button {
             background: #6c757d;
             color: white;
@@ -65,6 +56,15 @@
         .avatar-button:hover {
             background: #495057;
         }
+
+        .cropper-container {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .hidden-input {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -74,12 +74,12 @@
         <div class="row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                    <img class="rounded-circle mt-5" width="150px" th:src="@{${user.avatar}}" alt="avatar">
+                    <img id="avatarPreview" class="rounded-circle mt-5" width="150px" th:src="@{${user.avatar}}"
+                         alt="avatar">
                     <span class="font-weight-bold" th:text="${user.fullname}"></span>
                     <span class="text-black-50" th:text="${user.email}"></span>
                     <span> </span>
-                    <input type="file" id="avatarFile" name="avatarFile" class="hidden-input"
-                           onchange="previewAvatar(this)">
+                    <input type="file" id="avatarFile" name="avatarFile" class="hidden-input">
                     <button type="button" class="avatar-button" onclick="document.getElementById('avatarFile').click()">
                         Change Avatar
                     </button>
@@ -93,11 +93,13 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-12"><label class="labels">Name</label><input th:field="*{fullname}"
-                                                                                        type="text" class="form-control"
+                                                                                        type="text"
+                                                                                        class="form-control"
                                                                                         placeholder="Name"></div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Email</label><input th:field="*{email}" type="text"
+                        <div class="col-md-12"><label class="labels">Email</label><input th:field="*{email}"
+                                                                                         type="text"
                                                                                          class="form-control"
                                                                                          placeholder="Email"></div>
                         <div class="col-md-12"></div>
@@ -120,26 +122,79 @@
                                                                                        placeholder="City"></div>
                     </div>
                     <div class="mt-5 text-center">
-                        <input class="btn btn-primary profile-button" type="submit" value="Save">
+                        <input class="btn btn-primary profile-button" type="button" value="Save"
+                               onclick="saveCroppedAvatar()">
                         <a class="btn btn-primary profile-button" href="/user-page">Back to home</a>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="p-3 py-5">
-                    <div class="d-flex justify-content-between align-items-center experience">
-                        <span>Security</span>
-                        <span class="border px-3 p-1 add-experience" data-bs-toggle="modal"
-                              data-bs-target="#changePasswordModal">
-                            <i class="fa fa-plus"></i>&nbsp;Change password
-                        </span>
-                    </div>
-                    <br>
                 </div>
             </div>
         </div>
     </form>
 </div>
+<script>
+    var cropper;
+
+    function initCropper() {
+        // Check if Cropper instance exists, destroy it before reinitializing
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        // Initialize Cropper.js
+        var image = document.getElementById('avatarPreview');
+        cropper = new Cropper(image, {
+            aspectRatio: 1, // 1:1 aspect ratio, you can adjust this as needed
+            viewMode: 1,
+            autoCropArea: 1,
+            background: false,
+            movable: true,
+            rotatable: true,
+            scalable: true,
+            zoomable: true,
+            responsive: true
+        });
+
+        // Show hidden input file when initializing Cropper
+        $('#avatarFile').removeClass('hidden-input');
+    }
+
+    // Example: Get cropped image data and send it to server via AJAX
+    function saveCroppedAvatar() {
+        if (cropper) {
+            cropper.getCroppedCanvas({
+                width: 200, // Specify width and height for the cropped image
+                height: 200,
+            }).toBlob(function(blob) {
+                var formData = new FormData();
+                formData.append('croppedAvatar', blob, 'avatar.jpg');
+
+                // Example AJAX request to save cropped avatar
+                $.ajax({
+                    url: '/saveCroppedAvatar',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        console.log('Avatar saved successfully:', response);
+                        alert('Avatar saved successfully!');
+                        // Handle success response here
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error saving avatar:', error);
+                        alert('Error saving avatar!');
+                        // Handle error response here
+                    }
+                });
+            }, 'image/jpeg'); // Adjust format as needed (jpeg/png)
+        }
+    }
+
+    // Handle file input change event to initialize Cropper
+    $('#avatarFile').change(function() {
+        initCropper();
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 </body>

@@ -155,6 +155,65 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+let stompClient = null;
+
+function connect() {
+    const socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/messages', function (message) {
+            showMessage(JSON.parse(message.body));
+        });
+    });
+}
+
+function sendMessage() {
+    const input = document.getElementById('side-message-input');
+    const message = input.value;
+    const chatMessage = {
+        sender: 'currentUser',  // Replace with the current user's name or ID
+        content: message,
+        timestamp: new Date().toISOString()
+    };
+    stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+    input.value = ''; // Clear the input after sending
+}
+
+function showMessage(message) {
+    const messageContainer = document.getElementById('side-chat-messages');
+
+    const messageElement = document.createElement('div');
+    messageElement.className = 'chat-message';
+
+    const avatarElement = document.createElement('img');
+    avatarElement.src = 'path/to/default/avatar.png'; // Replace with sender's avatar URL
+    avatarElement.className = 'avatar';
+
+    const contentElement = document.createElement('p');
+    contentElement.textContent = message.content;
+    contentElement.className = 'message-content';
+
+    messageElement.appendChild(avatarElement);
+    messageElement.appendChild(contentElement);
+
+    messageContainer.appendChild(messageElement);
+    messageContainer.scrollTop = messageContainer.scrollHeight; // Scroll to bottom
+}
+
+connect();
+
+// Event listener for sending message on button click
+document.querySelector('.side-chat-input button').addEventListener('click', sendMessage);
+
+// Event listener for sending message on Enter key press
+document.getElementById('side-message-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+
 
 
 
