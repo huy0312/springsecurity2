@@ -5,6 +5,7 @@ import com.huynguyen.springsecurity2.entity.User;
 import com.huynguyen.springsecurity2.repository.UserRepository;
 import com.huynguyen.springsecurity2.service.EmailService;
 import com.huynguyen.springsecurity2.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -190,6 +191,12 @@ public class UserServiceImpl implements UserService {
         userDto.setCity(user.getCity());
         userDto.setCountry(user.getCountry());
         return userDto;
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 
 }

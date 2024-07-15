@@ -8,10 +8,11 @@ import com.huynguyen.springsecurity2.service.EmailService;
 import com.huynguyen.springsecurity2.service.FriendShipService;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 @Controller
@@ -190,4 +190,42 @@ public class UserController {
         model.addAttribute("message", "Friend request sent successfully!");
         return "redirect:/user-page";
     }
+
+    @PostMapping("/saveCroppedAvatar")
+    @ResponseBody
+    public ResponseEntity<String> saveCroppedAvatar(@RequestParam("croppedAvatar") MultipartFile file,
+                                                    Authentication authentication) {
+        try {
+            if (authentication != null && authentication.isAuthenticated()) {
+                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                User currentUser = userService.findById(userDetails.getId());
+
+                // Lưu file ảnh vào thư mục và cập nhật đường dẫn ảnh trong cơ sở dữ liệu
+                String fileName = UUID.randomUUID().toString() + ".jpg";
+                String filePath = "D:/uploads/avatar/" + fileName;
+                File dest = new File(filePath);
+                file.transferTo(dest);
+
+                // Cập nhật thông tin ảnh của người dùng trong cơ sở dữ liệu
+                currentUser.setAvatar("/uploads/avatar/" + fileName);
+                userService.updateUser(currentUser);
+
+                // Trả về URL của ảnh mới
+                return ResponseEntity.ok("/uploads/avatar/" + fileName);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving avatar!");
+        }
+    }
+
+
+
+
+
+
+
+
 }

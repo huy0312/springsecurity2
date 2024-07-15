@@ -13,37 +13,30 @@
         body {
             background: #f2f2f2;
         }
-
         .form-control:focus {
             box-shadow: none;
             border-color: #6c757d;
         }
-
         .profile-button {
             background: #6c757d;
             box-shadow: none;
             border: none;
         }
-
         .profile-button:hover {
             background: #495057;
         }
-
         .profile-button:focus, .profile-button:active {
             background: #495057;
             box-shadow: none;
         }
-
         .back:hover {
             color: #495057;
             cursor: pointer;
         }
-
         .labels {
             font-size: 11px;
             color: #495057;
         }
-
         .avatar-button {
             background: #6c757d;
             color: white;
@@ -52,18 +45,32 @@
             cursor: pointer;
             margin-top: 10px;
         }
-
         .avatar-button:hover {
             background: #495057;
         }
-
         .cropper-container {
             max-width: 100%;
             height: auto;
         }
-
         .hidden-input {
             display: none;
+        }
+        #cropContainer {
+            display: none;
+            position: relative;
+        }
+        #okButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #okButton:hover {
+            background: #495057;
         }
     </style>
 </head>
@@ -76,6 +83,7 @@
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                     <img id="avatarPreview" class="rounded-circle mt-5" width="150px" th:src="@{${user.avatar}}"
                          alt="avatar">
+                    <img id="croppedAvatarPreview" class="rounded-circle mt-5" width="150px" style="display: none;" alt="cropped avatar">
                     <span class="font-weight-bold" th:text="${user.fullname}"></span>
                     <span class="text-black-50" th:text="${user.email}"></span>
                     <span> </span>
@@ -83,6 +91,10 @@
                     <button type="button" class="avatar-button" onclick="document.getElementById('avatarFile').click()">
                         Change Avatar
                     </button>
+                </div>
+                <div id="cropContainer">
+                    <img id="cropImage" style="max-width: 100%; height: auto;">
+                    <button type="button" id="okButton">OK</button>
                 </div>
             </div>
             <div class="col-md-5 border-right">
@@ -134,16 +146,17 @@
 <script>
     var cropper;
 
-    function initCropper() {
-        // Check if Cropper instance exists, destroy it before reinitializing
+    function initCropper(imageSrc) {
+        // Destroy existing Cropper instance if exists
         if (cropper) {
             cropper.destroy();
         }
 
-        // Initialize Cropper.js
-        var image = document.getElementById('avatarPreview');
+        // Initialize Cropper.js with the new image
+        var image = document.getElementById('cropImage');
+        image.src = imageSrc;
         cropper = new Cropper(image, {
-            aspectRatio: 1, // 1:1 aspect ratio, you can adjust this as needed
+            aspectRatio: 1, // 1:1 aspect ratio, adjust as needed
             viewMode: 1,
             autoCropArea: 1,
             background: false,
@@ -154,21 +167,19 @@
             responsive: true
         });
 
-        // Show hidden input file when initializing Cropper
-        $('#avatarFile').removeClass('hidden-input');
+        // Show crop container
+        $('#cropContainer').show();
     }
 
-    // Example: Get cropped image data and send it to server via AJAX
     function saveCroppedAvatar() {
         if (cropper) {
             cropper.getCroppedCanvas({
-                width: 200, // Specify width and height for the cropped image
-                height: 200,
+                width: 200, // Specify width and height for cropped image
+                height: 200
             }).toBlob(function(blob) {
                 var formData = new FormData();
                 formData.append('croppedAvatar', blob, 'avatar.jpg');
 
-                // Example AJAX request to save cropped avatar
                 $.ajax({
                     url: '/saveCroppedAvatar',
                     method: 'POST',
@@ -176,23 +187,38 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        console.log('Avatar saved successfully:', response);
                         alert('Avatar saved successfully!');
-                        // Handle success response here
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#croppedAvatarPreview').attr('src', e.target.result).show();
+                            $('#avatarPreview').hide();
+                            // Hide crop container and destroy cropper instance
+                            $('#cropContainer').hide();
+                            cropper.destroy();
+                        };
+                        reader.readAsDataURL(blob);
                     },
                     error: function(xhr, status, error) {
                         console.error('Error saving avatar:', error);
                         alert('Error saving avatar!');
-                        // Handle error response here
                     }
                 });
-            }, 'image/jpeg'); // Adjust format as needed (jpeg/png)
+            }, 'image/jpeg');
         }
     }
 
     // Handle file input change event to initialize Cropper
-    $('#avatarFile').change(function() {
-        initCropper();
+    $('#avatarFile').change(function(event) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            initCropper(e.target.result);
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    });
+
+    // Handle OK button click event to save the cropped avatar
+    $('#okButton').click(function() {
+        saveCroppedAvatar();
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

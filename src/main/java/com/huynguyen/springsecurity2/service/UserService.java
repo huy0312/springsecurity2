@@ -44,6 +44,7 @@ public interface UserService {
 
     UserDto getUser(User user);
 
+    void updateUser(User user);
 
 
 }
