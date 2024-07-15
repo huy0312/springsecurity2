@@ -1,11 +1,8 @@
 package com.huynguyen.springsecurity2.controller;
 
 import com.huynguyen.springsecurity2.dto.UserDto;
-import com.huynguyen.springsecurity2.entity.User;
-import com.huynguyen.springsecurity2.service.EmailService;
 import com.huynguyen.springsecurity2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +14,6 @@ public class VerificationController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
 
     @GetMapping("/verify")
     public String verify() {
