@@ -1,6 +1,5 @@
-package com.huynguyen.springsecurity2.service;
+package com.huynguyen.springsecurity2.utils;
 
-import com.huynguyen.springsecurity2.entity.FriendShip;
 import com.huynguyen.springsecurity2.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

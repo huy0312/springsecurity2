@@ -1,4 +1,4 @@
-package com.huynguyen.springsecurity2.service;
+package com.huynguyen.springsecurity2.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
