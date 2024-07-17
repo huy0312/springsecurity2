@@ -4,6 +4,9 @@ package com.huynguyen.springsecurity2.entity;
 import com.huynguyen.springsecurity2.entity.enums.Role;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
@@ -42,6 +45,12 @@ public class User {
 
     @Column(name="verificationCode")
     private String verificationCode;
+
+    @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FriendShip> friendships1 = new HashSet<>();
+
+    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FriendShip> friendships2 = new HashSet<>();
 
 
     public User(String email, String password, String fullname, String role, String phone, boolean enable, String avatar, String country, String city, String verificationCode) {
